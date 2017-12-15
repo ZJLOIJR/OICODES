@@ -8,6 +8,7 @@ using namespace std;
 
 const int N = 20007, M = 200007;
 
+//////////////////////////
 inline int read()
 {
 	int sum = 0, f = 1;
@@ -30,6 +31,7 @@ inline int read()
 
 	return sum * f;
 }
+//////////////////////////
 
 struct Graph
 {
@@ -56,6 +58,7 @@ struct Graph
 
 int n, m, u, v, w;
 
+//////////////////////////
 void init()
 {
 	g1.init();
@@ -69,7 +72,9 @@ void init()
 		g1.add_edge(v, u, w);
 	}
 }
+//////////////////////////
 
+//////////////////////////
 struct node { int id, val; };
 
 int operator<(node x, node y) { return x.val > y.val; }
@@ -106,8 +111,10 @@ void Dijkstra()
 		}
 	}
 }
+//////////////////////////
 
-void dfs(int u)
+//////////////////////////
+void dfs_build_graph(int u)
 {
 	vis[u] = 1;
 	for (int i = g1.st[u]; i; i = g1.nx[i])
@@ -119,7 +126,7 @@ void dfs(int u)
 			g2.add_edge(v, u, g1.len[i]);
 
 			if (!vis[v])
-				dfs(v);
+				dfs_build_graph(v);
 		}
 	}
 }
@@ -127,8 +134,9 @@ void dfs(int u)
 void build_graph()
 {
 	memset(vis, 0, sizeof(vis));
-	dfs(n);
+	dfs_build_graph(n);
 }
+//////////////////////////
 
 void output_answers()
 {
@@ -140,6 +148,7 @@ int main()
 	init();
 	Dijkstra();
 	build_graph();
+	find_bridges();
 	output_answers();
 	return 0;
 }
