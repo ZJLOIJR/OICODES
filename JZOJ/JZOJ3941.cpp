@@ -18,14 +18,12 @@ inline int read()
 	{
 		if (c == '-')
 			f = -1;
-
 		c = getchar();
 	}
 
 	while (c >= '0' && c <= '9')
 	{
 		sum = (sum << 1) + (sum << 3) + c - '0';
-
 		c = getchar();
 	}
 
@@ -37,7 +35,7 @@ struct Graph
 {
 	int edge_total;
 
-	int st[N], nx[M], len[M], to[M];
+	int st[N], nx[M], len[M], to[M], id[M];
 	
 	void init()
 	{
@@ -46,17 +44,20 @@ struct Graph
 		edge_total = 0;
 	}
 	
-	void add_edge(int _from, int _to, int _len)
+	void add_edge(int _from, int _to, int _len, int _id)
 	{
 		edge_total++;
 		to[edge_total] = _to;
 		len[edge_total] = _len;
 		nx[edge_total] = st[_from];
+		id[edge_total] = _id;
 		st[_from] = edge_total;
 	}
 } g1, g2;
 
 int n, m, u, v, w;
+
+int ans[N];
 
 //////////////////////////
 void init()
@@ -68,8 +69,8 @@ void init()
 	for (int i = 1; i <= m; i++)
 	{
 		u = read(), v = read(), w = read();
-		g1.add_edge(u, v, w);
-		g1.add_edge(v, u, w);
+		g1.add_edge(u, v, w, i);
+		g1.add_edge(v, u, w, i);
 	}
 }
 //////////////////////////
@@ -122,8 +123,8 @@ void dfs_build_graph(int u)
 		int v = g1.to[i];
 		if (dis[v] + g1.len[i] == dis[u])
 		{
-			g2.add_edge(u, v, g1.len[i]);
-			g2.add_edge(v, u, g1.len[i]);
+			g2.add_edge(u, v, g1.len[i], g1.id[i]);
+			g2.add_edge(v, u, g1.len[i], g1.id[i]);
 
 			if (!vis[v])
 				dfs_build_graph(v);
@@ -138,9 +139,45 @@ void build_graph()
 }
 //////////////////////////
 
+//////////////////////////
+
+int dfn[N], low[N];
+int dfsn = 0;
+
+void dfs_tarjan(int u, int fa)
+{
+	low[u] = dfn[u] = ++dfsn;
+
+	for (int i = g2.st[u]; i; i = g2.nx[i])
+	{
+		int v = g2.to[i];
+		if (!dfn[v])
+		{
+			dfs_tarjan(v, g2.id[i]);
+			low[u] = low[u] < low[v] ? low[u] : low[v];
+			if (low[v] > dfn[u])
+				ans[++ans[0]] = g2.id[i];
+		}
+		else if (dfn[v] < dfn[u] && g2.id[i] != fa)
+			low[u] = low[u] < dfn[v] ? low[u] : dfn[v];
+	}
+
+}
+
+void find_bridges()
+{
+	memset(vis, 0, sizeof(vis));
+	dfs_tarjan(1, -1);
+}
+
+//////////////////////////
+
 void output_answers()
 {
-
+	sort(ans + 1, ans + ans[0] + 1);
+	printf("%d\n", ans[0]);
+	for (int i = 1; i <= ans[0]; i++)
+		printf("%d ", ans[i]);
 }
 
 int main()
