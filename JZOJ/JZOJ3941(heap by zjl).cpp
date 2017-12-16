@@ -33,7 +33,7 @@ template<class T>
 struct heap
 {
 	int len;
-	T a[N * 20];
+	T a[N << 2];
 
 	void init() { len = 0; }
 
@@ -67,15 +67,20 @@ struct heap
 			nx = now << 1;
 			if (nx > len)
 				break;
-			if (nx | 1 > len)
+			if ((nx | 1) > len)
 			{
 				if (a[nx] < a[now])
 					swap(now, nx);
+				else
+					break;
 			}
 			else
 			{
-				nx = a[nx] < a[nx | 1] ? nx : nx | 1;
-				swap(now, nx);
+				nx = a[nx] < a[nx | 1] ? nx : (nx | 1);
+				if (a[nx] < a[now])
+					swap(now, nx);
+				else
+					break;
 			}
 			now = nx;
 		}
