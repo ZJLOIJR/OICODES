@@ -1,3 +1,4 @@
+
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -29,7 +30,6 @@ inline int read()
 
 void init()
 {
-	freopen("IN", "r", stdin);
 	n = read(), q = read();
 	while (n--)
 	{
@@ -39,12 +39,12 @@ void init()
 	for (int i = 1; i <= 256; i++)
 		for (int j = 1; j <= 256; j++)
 			for (int k = 1; k <= 256; k++)
-				sum[i][j][k] += sum[i - 1][j][k] + sum[i][j - 1][k] + sum[i][j][k - 1] - 2 * sum[i - 1][j - 1][k - 1] - sum[i - 1][j - 1][k] - sum[i - 1][j][k - 1] - sum[i][j - 1][k - 1];
+				sum[i][j][k] += sum[i - 1][j][k] + sum[i][j - 1][k] + sum[i][j][k - 1] + sum[i - 1][j - 1][k - 1] - sum[i - 1][j - 1][k] - sum[i - 1][j][k - 1] - sum[i][j - 1][k - 1];
 }
 
 inline int qrysum(int x1, int y1, int z1, int x2, int y2, int z2)
 {
-	return sum[x2][y2][z2] - sum[x1 - 1][y1][z1] - sum[x1][y1 - 1][z1] - sum[x1][y1][z1 - 1] + 2 * sum[x1 - 1][y1 - 1][z1 - 1] + sum[x1 - 1][y1 - 1][z1] + sum[x1 - 1][y1][z1 - 1] + sum[x1][y1 - 1][z1 - 1];
+	return sum[x2][y2][z2] - sum[x1 - 1][y1][z1] - sum[x1][y1 - 1][z1] - sum[x1][y1][z1 - 1] - sum[x1 - 1][y1 - 1][z1 - 1] + sum[x1 - 1][y1 - 1][z1] + sum[x1 - 1][y1][z1 - 1] + sum[x1][y1 - 1][z1 - 1];
 }
 
 int check(int m)
