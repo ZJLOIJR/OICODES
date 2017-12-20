@@ -1,4 +1,3 @@
-
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -44,15 +43,15 @@ void init()
 
 inline int qrysum(int x1, int y1, int z1, int x2, int y2, int z2)
 {
-	return sum[x2][y2][z2] - sum[x1 - 1][y1][z1] - sum[x1][y1 - 1][z1] - sum[x1][y1][z1 - 1] - sum[x1 - 1][y1 - 1][z1 - 1] + sum[x1 - 1][y1 - 1][z1] + sum[x1 - 1][y1][z1 - 1] + sum[x1][y1 - 1][z1 - 1];
+	return sum[x2][y2][z2] - sum[x1 - 1][y2][z2] - sum[x2][y1 - 1][z2] - sum[x2][y2][z1 - 1] - sum[x1 - 1][y1 - 1][z1 - 1] + sum[x1 - 1][y1 - 1][z2] + sum[x1 - 1][y2][z1 - 1] + sum[x2][y1 - 1][z1 - 1];
 }
 
 int check(int m)
 {
-	for (int i = m; i <= 255; i++)
-		for (int j = m; j <= 255; j++)
-			for (int k = m; k <= 255; k++)
-				if (qrysum(i - m + 1, j - m + 1, k - m + 1, i + 1, j + 1, k + 1) >= q)
+	for (int i = m + 1; i <= 256; i++)
+		for (int j = m + 1; j <= 256; j++)
+			for (int k = m + 1; k <= 256; k++)
+				if (qrysum(i - m, j - m, k - m, i, j, k) >= q)
 					return 1;
 	return 0;
 }
