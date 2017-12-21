@@ -39,6 +39,8 @@ struct SegTree
 			change(lson[rt], l, mid, ql, qr);
 		if (mid + 1 <= qr)
 			change(rson[rt], mid + 1, r, ql, qr);
+		down(lson[rt], l, mid);
+		down(rson[rt], mid + 1, r);
 		sum[rt] = sum[lson[rt]] + sum[rson[rt]];
 	}
 
