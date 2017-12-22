@@ -2,7 +2,7 @@
 #include <cstring>
 #include <cstdlib>
 
-const int N = 20009999;
+const int N = 29009999;
 
 int n, q, tot = 0;
 
@@ -17,10 +17,14 @@ struct SegTree
 		if (inc[rt] == 0) return;
 		if (l != r)
 		{
+			if (!lson[rt])
+				lson[rt] = ++tot;
+			if (!rson[rt])
+				rson[rt] = ++tot;
 			inc[lson[rt]] += inc[rt];
 			inc[rson[rt]] += inc[rt];
 		}
-		sum[rt] += inc[rt];
+		sum[rt] += inc[rt] * (r - l + 1);
 		inc[rt] = 0;
 	}
 	
@@ -62,7 +66,7 @@ struct SegTree
 
 void insert(int rt, int l, int r, int ql, int qr, int po)
 {
-	ST.change(root[rt], l, r, ql, qr);
+	ST.change(root[rt], 1, n, ql, qr);
 	if (l == r)
 		return;
 	int mid = (l + r) >> 1;
