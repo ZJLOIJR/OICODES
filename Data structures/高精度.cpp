@@ -2,11 +2,6 @@ struct largeint
 {
 	int len;
 	int arr[LEN];
-	
-	void init()
-	{
-		memset(arr, 0, sizeof(arr));
-	}
 
 	largeint& operator=(int x)
 	{
@@ -26,21 +21,21 @@ struct largeint
 		return *this;
 	}
 
-	largeint& operator+(largeint a)
+	largeint operator+(largeint a)
 	{
 		int mxlen = len > a.len ? len : a.len;
-		int c[LEN];
-		memset(c, 0, sizeof(c));
+		largeint tmp;
+		memset(tmp.arr, 0, sizeof(tmp.arr));
+		tmp.len = 0;
 		for (int i = 1; i <= mxlen; i++)
 		{
-			c[i] += arr[i] + a.arr[i];
-			c[i + 1] = c[i] / 10;
-			c[i] %= 10;
+			tmp.arr[i] += arr[i] + a.arr[i];
+			tmp.arr[i + 1] = tmp.arr[i] / 10;
+			tmp.arr[i] %= 10;
 		}
-		if (c[mxlen + 1] > 0)
+		if (tmp.arr[mxlen + 1] > 0)
 			mxlen++;
-		len = mxlen;
-		memcpy(arr, c, sizeof(c));
-		return *this;
+		tmp.len = mxlen;
+		return tmp;
 	}
 };
