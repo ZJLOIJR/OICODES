@@ -32,13 +32,15 @@ int main()
 	memset(a.arr, 0, sizeof(a.arr));
 	memset(b.arr, 0, sizeof(b.arr));
 	scanf("%d%d", &n, &T);
-	len = n * 10 + 1;
+	len = n * 10 + 10;
 	for (int i = 1; i <= n; i++)
 		for (int j = 1; j <= n; j++)
 		{
 			scanf(" %c", &c);
-			if (c != '0')
-				a.arr[i * 10 + c - '9'][j * 10 + 1] = 1;
+			for (int k = 1; k < c - '0'; k++)
+				a.arr[i * 10 + k][i * 10 + k + 1] = 1;
+			if (c - '0')
+				a.arr[i * 10 + c - '0'][j * 10 + 1] = 1;
 		}
 	for (int i = 1; i <= len; i++)
 		b.arr[i][i] = 1;
@@ -49,6 +51,6 @@ int main()
 		a = a * a;
 		T >>= 1;
 	}
-	printf("%d\n", b.arr[11][len]);
+	printf("%d\n", b.arr[11][n * 10 + 1]);
 	return 0;
 }
