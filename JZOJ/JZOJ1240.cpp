@@ -37,11 +37,11 @@ int solve(int ind)
 	ind -= 2;
 	memset(bas.arr, 0, sizeof(bas.arr));
 	memset(mov.arr, 0, sizeof(mov.arr));
-	bas.arr[1][1] = 2, bas.arr[1][2] = 1, bas.arr[1][3] = 1;
-	mov.arr[1][1] = 1, mov.arr[2][1] = 1, mov.arr[3][1] = 1, mov.arr[2][2] = 1, mov.arr[2][3] = 1, mov.arr[2][3] = 1;
+	memset(ret.arr, 0, sizeof(ret.arr));
+	bas.arr[1][1] = 1, bas.arr[1][2] = 1, bas.arr[1][3] = 2;
+	mov.arr[1][1] = mov.arr[1][2] = mov.arr[1][3] = mov.arr[2][1] = mov.arr[2][3] = mov.arr[3][3] = 1;
 	for (int i = 1; i <= 3; i++)
-		for (int j = 1; j <= 3; j++)
-			ret.arr[i][j] = 1;
+		ret.arr[i][i] = 1;
 	while (ind)
 	{
 		if (ind & 1)
@@ -49,8 +49,8 @@ int solve(int ind)
 		mov = mov * mov;
 		ind >>= 1;
 	}
-	ret = bas * ret;
-	return ret.arr[1][1];
+	bas = bas * ret;
+	return bas.arr[1][3];
 }
 
 int main()
@@ -59,7 +59,7 @@ int main()
 	while (t--)
 	{
 		scanf("%d%d", &l, &r);
-		printf("%d\n", solve(r) - solve(l - 1));
+		printf("%d\n", (solve(r) - solve(l - 1) + P) % P);
 	}
 	return 0;
 }
