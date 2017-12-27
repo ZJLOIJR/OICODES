@@ -1,20 +1,20 @@
 #include <cstdio>
 #include <cstring>
 
-const int P = 1000000007;
+const long long P = 1000000007;
 
 int t, n;
 
 struct matrix
 {
-	int arr[4][4];
+	long long arr[4][4];
 
 	void init()
 	{
 		memset(arr, 0, sizeof(arr));
 	}
 
-	int* operator[](int index)
+	long long* operator[](int index)
 	{
 		return arr[index];
 	}
@@ -62,7 +62,7 @@ int main()
 			n >>= 1;
 		}
 		ans = bas * ans;
-		printf("%d\n", (ans[1][1] + P) % P);
+		printf("%lld\n", ans[1][1]);
 	}
 	return 0;
 }
