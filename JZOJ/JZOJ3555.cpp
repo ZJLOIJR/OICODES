@@ -19,7 +19,7 @@ int getdis(int u, int v)
 		if (dep[f[u][i]] >= dep[v])
 			u = f[u][i];
 	if (u == v)
-		return u;
+		return dep[tmpu] - dep[u] + dep[tmpv] - dep[u];
 	for (int i = 20; i >= 0; i--)
 		if (f[u][i] != f[v][i])
 			u = f[u][i], v = f[v][i];
