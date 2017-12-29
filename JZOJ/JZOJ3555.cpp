@@ -1,54 +1,45 @@
+#pragma GCC optimize(3)
 #include <cstdio>
 #include <cstring>
 
 const int N = 200007;
 
 int n, q, u, x, y, cnt, nowans;
-int f[N][20], dep[N];
+int f[N][21], dep[N];
 
-int getdis(int u, int v)
+void swap(int &a, int &b) { int t = a; a = b, b = t; }
+
+int getlca(int u, int v)
 {
-	int lca, tmpu = u, tmpv = v;
 	if (dep[v] > dep[u])
-	{
-		int t = u;
-		u = v;
-		v = t;
-	}
+		swap(u, v);
 	for (int i = 20; i >= 0; i--)
 		if (dep[f[u][i]] >= dep[v])
 			u = f[u][i];
 	if (u == v)
-		return dep[tmpu] - dep[u] + dep[tmpv] - dep[u];
+		return u;
 	for (int i = 20; i >= 0; i--)
 		if (f[u][i] != f[v][i])
 			u = f[u][i], v = f[v][i];
-	lca = f[u][0];
-	return dep[tmpu] - dep[lca] + dep[tmpv] - dep[lca];
+	return f[u][0];
 }
 
-void add(int fa, int u)
+void add(int fa, int tmp)
 {
-	dep[u] = dep[fa] + 1;
-	f[u][0] = fa;
+	f[tmp][0] = fa;
+	dep[tmp] = dep[fa] + 1;
 	for (int i = 1; i <= 20; i++)
-		f[u][i] = f[f[u][i - 1]][i - 1];
+		f[tmp][i] = f[f[tmp][i - 1]][i - 1];
 }
 
 void solve()
 {
-	int len = getdis(x, cnt);
+	int lca = getlca(x, cnt), len = dep[cnt] + dep[x] - 2 * dep[lca];
 	if (len > nowans)
-	{
 		nowans = len, y = cnt;
-		return;
-	}
-	len = getdis(cnt, y);
+	lca = getlca(cnt, y), len = dep[cnt] + dep[y] - 2 * dep[lca];
 	if (len > nowans)
-	{
 		nowans = len, x = cnt;
-		return;
-	}
 }
 
 int main()
