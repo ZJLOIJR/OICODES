@@ -16,7 +16,8 @@ struct SplayTree
 
 	void update(int x)
 	{
-		siz[x] = siz[son[x][0]] + siz[son[x][1]] + 1;
+		if (x)
+			siz[x] = siz[son[x][0]] + siz[son[x][1]] + 1;
 	}
 
 	void rotate(int x, int kind)
@@ -29,6 +30,9 @@ struct SplayTree
 		if (z)
 			son[z][son[z][1] == y] = x;
 		son[x][kind] = y, fa[y] = x;
+		update(y);
+		update(x);
+		update(z);
 	}
 
 	void splay(int x, int anc)
@@ -82,6 +86,32 @@ struct SplayTree
 		int now = root;
 		while (2333)
 		{
+			if (k == 0)
+				return now;
+			int cnt = siz[son[now][1]];
+			if (cnt < k)
+			{
+				if (son[now][0] == 0)
+					return now;
+				now = son[now][0];
+				k = k - cnt - 1;
+			}
+			else
+			{
+				if (son[now][1] == 0)
+					return now;
+				now = son[now][1];
+			}
 		}
 	}
 } tree;
+
+int main()
+{
+	for (int i = 1; i <= 100; i++)
+	{
+		tree.insert(i);
+		printf("%d\n", tree.qrykth(i));
+	}
+	return 0;
+}
