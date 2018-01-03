@@ -5,7 +5,7 @@
 
 const int N = 200007;
 
-int n;
+int n, x, k;
 
 struct SplayTree
 {
@@ -86,8 +86,6 @@ struct SplayTree
 		int now = root;
 		while (2333)
 		{
-			if (k == 0)
-				return now;
 			int cnt = siz[son[now][1]];
 			if (cnt < k)
 			{
@@ -108,10 +106,12 @@ struct SplayTree
 
 int main()
 {
-	for (int i = 1; i <= 100; i++)
+	scanf("%d", &n);
+	for (int i = 1; i <= n; i++)
 	{
-		tree.insert(i);
-		printf("%d\n", tree.qrykth(i));
+		scanf("%d%d", &x, &k);
+		tree.insert(x);
+		printf("%d\n", tree.key[tree.qrykth(k)]);
 	}
 	return 0;
 }
