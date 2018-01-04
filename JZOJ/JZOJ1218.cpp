@@ -103,7 +103,10 @@ struct SplayTree
 				return 0;
 			int cnt = siz[son[now][1]];
 			if (cnt == k - 1)
+			{
+				splay(now, 0);
 				return now;
+			}
 			if (cnt > k - 1)
 				now = son[now][1];
 			else
