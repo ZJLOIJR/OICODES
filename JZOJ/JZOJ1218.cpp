@@ -1,11 +1,24 @@
+#pragma GCC optimize(3)
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
+using namespace std;
 
 const int N = 200007;
 
-int n, x, k;
+int n, m, x, k = 0, tot = 0;
+int qry[N], a[N];
+
+inline int read()
+{
+	int x = 0, f = 0;
+	char c = getchar();
+	for (; c < '0' || c > '9'; c = getchar()) if (c == '-') f = 1;
+	for (; c >= '0' && c <= '9'; c = getchar()) x = (x << 1) + (x << 3) + c - '0';
+	return f ? -x : x;
+}
 
 struct SplayTree
 {
@@ -86,32 +99,44 @@ struct SplayTree
 		int now = root;
 		while (2333)
 		{
+			if (now == 0)
+				return 0;
 			int cnt = siz[son[now][1]];
-			if (cnt < k)
-			{
-				if (son[now][0] == 0)
-					return now;
-				now = son[now][0];
-				k = k - cnt - 1;
-			}
+			if (cnt == k - 1)
+				return now;
+			if (cnt > k - 1)
+				now = son[now][1];
 			else
 			{
-				if (son[now][1] == 0)
-					return now;
-				now = son[now][1];
+				now = son[now][0];
+				k = k - cnt - 1;
 			}
 		}
 	}
 } tree;
 
+void init()
+{
+	n = read(), m = read();
+	for (int i = 1; i <= n; i++)
+		*(a + i) = read();
+}
+
+void solve()
+{
+	for (int i = 1; i <= m; i++)
+	{
+		*(qry + i) = read();
+		for (int j = qry[i - 1] + 1; j <= qry[i]; j++)
+			tree.insert(a[j]), tot++;
+		k++;
+		printf("%d\n", tree.key[tree.qrykth(tot - k + 1)]);
+	}
+}
+
 int main()
 {
-	scanf("%d", &n);
-	for (int i = 1; i <= n; i++)
-	{
-		scanf("%d%d", &x, &k);
-		tree.insert(x);
-		printf("%d\n", tree.key[tree.qrykth(k)]);
-	}
+	init();
+	solve();
 	return 0;
 }
