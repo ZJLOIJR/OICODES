@@ -26,7 +26,7 @@ inline void swap(int &a, int &b)
 
 struct SplayTree
 {
-	int fa[N], son[N][2], key[N], tag[N];
+	int fa[N], son[N][2], key[N], tag[N], siz[N];
 	int root, tot;
 
 	void init() { tot = 0, root = 0; }
@@ -39,35 +39,33 @@ struct SplayTree
 		tag[x] = 0;
 	}
 
-	void rotate(int x, int kind)
+	void update(int x) { siz[x] = siz[son[x][0]] + siz[son[x][1]] + 1; }
+
+	int get(int x) { return son[fa[x]][1] == x; }
+
+	void rotate(int x)
 	{
-		int y = fa[x], z = fa[y];
-		down(z);
-		down(y);
-		down(x);
+		int y = fa[x], z = fa[y], kind = !get(x);
 		son[y][!kind] = son[x][kind];
 		if (son[x][kind])
 			fa[son[x][kind]] = y;
 		fa[x] = z;
 		if (z)
-			son[z][son[z][1] == y] = x;
+			son[z][get(y)] = x;
 		son[x][kind] = y, fa[y] = x;
+		down(y), down(x);
+		update(z), update(x), update(y);
 	}
 
 	void splay(int x, int anc)
 	{
 		while (fa[x] != anc)
 		{
-			int y = fa[x], z = fa[y];
-			if (z == anc)
-				rotate(x, x == son[y][0]);
+			int y = fa[x];
+			if (fa[y] == anc)
+				rotate(x);
 			else
-			{
-				if ((y == son[z][0]) == (x == son[y][0]))
-					rotate(y, y == son[z][0]), rotate(x, x == son[y][0]);
-				else
-					rotate(x, x == son[y][0]), rotate(x, x == son[z][0]);
-			}
+				rotate(get(x) == get(y) ? y : x);
 		}
 		if (anc == 0)
 			root = x;
@@ -76,15 +74,16 @@ struct SplayTree
 	void insert(int x)
 	{
 		if (!root)
-			root = ++tot, fa[root] = 0, key[root] = x, tag[root] = 0;
+			root = ++tot, fa[root] = 0, key[root] = x, tag[root] = 0, siz[root] = 1;
 		else
 		{
 			int now = root;
 			while (2333)
 			{
+				siz[now]++;
 				if (!son[now][x > key[now]])
 				{
-					son[now][x > key[now]] = ++tot, fa[tot] = now, key[tot] = x, tag[tot] = 0;
+					son[now][x > key[now]] = ++tot, fa[tot] = now, key[tot] = x, tag[tot] = 0, siz[tot] = 1;
 					break;
 				}
 				now = son[now][x > key[now]];
@@ -93,7 +92,20 @@ struct SplayTree
 		}
 	}
 
-	void reverse(int l, int r)
+	int findkth(int k)
+	{
+		int now = root, cnt;
+		while (2333)
+		{
+			down(now);
+			cnt = siz[son[now][0]];
+			if (k - 1 == cnt) return now;
+			else if (k - 1 < cnt) now = son[now][0];
+			else now = son[now][1], k -= cnt + 1;
+		}
+	}
+
+	/*void reverse(int l, int r)
 	{
 		if (l - 1 < 1 && r + 1 > n)
 			tag[root] ^= 1;
@@ -109,10 +121,14 @@ struct SplayTree
 		}
 		else
 		{
-			splay(r + 1, 0);
 			splay(l - 1, 0);
+			splay(r + 1, l - 1);
 			tag[son[son[root][1]][0]] ^= 1;
 		}
+	}*/
+
+	void reverse(int l, int r)
+	{
 	}
 
 	void print(int x)
@@ -128,12 +144,14 @@ struct SplayTree
 
 int main()
 {
-	freopen("IN", "r", stdin);
-	freopen("OUT", "w", stdout);
+	//freopen("IN", "r", stdin);
+	//freopen("OUT", "w", stdout);
 	tree.init();
 	n = read(), q = read();
+	tree.insert(-2147483647);
 	for (int i = 1; i <= n; i++)
 		tree.insert(i);
+	tree.insert(2147483647);
 	while (q--)
 	{
 		u = read(), v = read();
