@@ -1,3 +1,4 @@
+#pragma GCC optimize(3)
 #include <cmath>
 #include <cstdio>
 #include <cstring>
@@ -33,13 +34,13 @@ struct SplayTree
 
 	void down(int x)
 	{
-		if (!x || tag[x] == 0) return;
+		if (x == 0 || tag[x] == 0) return;
 		swap(son[x][0], son[x][1]);
 		tag[son[x][0]] ^= 1, tag[son[x][1]] ^= 1;
 		tag[x] = 0;
 	}
 
-	void update(int x) { siz[x] = siz[son[x][0]] + siz[son[x][1]] + 1; }
+	void update(int x) { if (x) siz[x] = siz[son[x][0]] + siz[son[x][1]] + 1; }
 
 	int get(int x) { return son[fa[x]][1] == x; }
 
@@ -54,7 +55,7 @@ struct SplayTree
 			son[z][get(y)] = x;
 		son[x][kind] = y, fa[y] = x;
 		down(y), down(x);
-		update(z), update(x), update(y);
+		update(y), update(x);
 	}
 
 	void splay(int x, int anc)
@@ -105,30 +106,12 @@ struct SplayTree
 		}
 	}
 
-	/*void reverse(int l, int r)
-	{
-		if (l - 1 < 1 && r + 1 > n)
-			tag[root] ^= 1;
-		else if (l - 1 < 1)
-		{
-			splay(r + 1, 0);
-			tag[son[root][0]] ^= 1;
-		}
-		else if (r + 1 > n)
-		{
-			splay(l - 1, 0);
-			tag[son[root][1]] ^= 1;
-		}
-		else
-		{
-			splay(l - 1, 0);
-			splay(r + 1, l - 1);
-			tag[son[son[root][1]][0]] ^= 1;
-		}
-	}*/
-
 	void reverse(int l, int r)
 	{
+		int lx = findkth(l), rx = findkth(r + 2);
+		splay(lx, 0);
+		splay(rx, lx);
+		tag[son[son[root][1]][0]] ^= 1;
 	}
 
 	void print(int x)
@@ -137,15 +120,13 @@ struct SplayTree
 			return;
 		down(x);
 		print(son[x][0]);
-		printf("%d ", x);
+		if (key[x] != 2147483647 && key[x] != -2147483647) printf("%d ", key[x]);
 		print(son[x][1]);
 	}
 } tree;
 
 int main()
 {
-	//freopen("IN", "r", stdin);
-	//freopen("OUT", "w", stdout);
 	tree.init();
 	n = read(), q = read();
 	tree.insert(-2147483647);
@@ -156,9 +137,6 @@ int main()
 	{
 		u = read(), v = read();
 		tree.reverse(u, v);
-		//tree.print(tree.root);
-		//putchar('\n');
-		//printf("%d\n", q);
 	}
 	tree.print(tree.root);
 	return 0;
