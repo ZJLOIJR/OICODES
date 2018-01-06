@@ -18,6 +18,8 @@ struct node
 	void init() { memset(son, 0, sizeof(son)); fail = NULL, data = 0; }
 };
 
+node* que[1000007];
+
 struct DictionaryTree
 {
 	node* root;
@@ -44,7 +46,7 @@ struct DictionaryTree
 
 	void getfail()
 	{
-		node* que[10000007];
+		memset(que, 0, sizeof(que));
 		int head = 1, tail = 0;
 		que[++tail] = root;
 		while (head <= tail)
@@ -94,6 +96,7 @@ struct DictionaryTree
 				else break;
 				tmp = tmp->fail;
 			}
+			s++;
 		}
 		return ret;
 	}
@@ -105,11 +108,11 @@ int main()
 	scanf("%d", &n);
 	while (n--)
 	{
-		scanf("%s", s + 1);
-		Tree.insert(s + 1);
+		scanf("%s", s);
+		Tree.insert(s);
 	}
 	Tree.getfail();
-	scanf("%s", s + 1);
-	printf("%d\n", Tree.match(s + 1));
+	scanf("%s", s);
+	printf("%d\n", Tree.match(s));
 	return 0;
 }
