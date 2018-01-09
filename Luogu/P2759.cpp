@@ -2,17 +2,6 @@
 #include <cstdio>
 #include <cstring>
 
-int log10(long long a)
-{
-	int ans = 0;
-	while (a)
-	{
-		ans++;
-		a /= 10;
-	}
-	return ans;
-}
-
 long long n, l, r, ret, mid;
 
 int main()
@@ -22,7 +11,7 @@ int main()
 	while (l <= r)
 	{
 		mid = (l + r) >> 1;
-		if (mid * log10(mid) + 1 >= n)
+		if (mid * log(mid) / log(10) + 1 >= n)
 			ret = mid, r = mid - 1;
 		else
 			l = mid + 1;
