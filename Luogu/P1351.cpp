@@ -1,3 +1,4 @@
+#pragma GCC optimize(2)
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -33,16 +34,14 @@ void solve()
 {
 	for (int t = 1; t <= n; t++)
 	{
+		int sum = 0, mx = 0;
 		for (int i = st[t]; i; i = nx[i])
 		{
-			int u = to[i];
-			for (int j = nx[i]; j; j = nx[j])
-			{
-				int v = to[j];
-				if (w[u] * w[v] > ansmax)
-					ansmax = w[u] * w[v];
-				anssum = (anssum + w[u] * w[v]) % P;
-			}
+			u = to[i];
+			if (w[u] * mx > ansmax)
+				ansmax = w[u] * mx;
+			anssum = (anssum + w[u] * sum) % P;
+			sum = (sum + w[u]) % P, mx = w[u] > mx ? w[u] : mx;
 		}
 	}
 	printf("%d %d\n", ansmax, anssum * 2 % P);
