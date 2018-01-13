@@ -1,3 +1,4 @@
+#pragma GCC optimize(3)
 #include <map>
 #include <cmath>
 #include <cstdio>
