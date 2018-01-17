@@ -1,1 +1,2 @@
 JZOJ1496 水题
+http://blog.csdn.net/blackjack_/article/details/74997479 树状数组区间加法and区间求和
