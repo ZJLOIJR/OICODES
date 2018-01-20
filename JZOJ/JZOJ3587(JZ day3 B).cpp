@@ -45,7 +45,7 @@ int main()
 	return 0;
 }
 
-//It's right, and it can be accepted.However, it runs slower than above.
+//It's right, and it can be accepted.However, it runs slower than that above.
 #include <cmath>
 #include <cstdio>
 #include <cstring>
