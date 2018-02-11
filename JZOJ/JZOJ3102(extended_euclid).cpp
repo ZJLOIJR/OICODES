@@ -21,7 +21,7 @@ ll ext_gcd(ll a, ll b, ll& x, ll& y)
 
 int main()
 {
-	scanf("%lld%lld", &a, &b, &x, &y);
+	scanf("%lld%lld", &a, &b);
 	ext_gcd(a, b, x, y);
 	printf("%lld\n", (x + b) % b);
 	return 0;
