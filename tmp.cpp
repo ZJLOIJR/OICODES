@@ -77,10 +77,11 @@ void dfs1(int u, int from)
 		int v = to[i];
 		if (v != from)
 		{
-			dep[v] = dep[u] + 1, fa[v] = u, siz[u] += siz[v];
+			dep[v] = dep[u] + 1, fa[v] = u;
 			dfs1(v, u);
+			siz[u] += siz[v];
+			if (siz[v] > mxsiz) mxsiz = siz[v], mxid = v;
 		}
-		if (siz[v] > mxsiz) mxsiz = siz[v], mxid = v;
 	}
 	son[u] = mxid;
 }
@@ -131,7 +132,7 @@ void solve()
 		}
 		else if (opt == 2)
 		{
-			x = read(), y = read(), z = read();
+			x = read(), y = read();
 			int ans = 0;
 			while (top[x] != top[y])
 			{
@@ -140,7 +141,8 @@ void solve()
 				x = fa[top[x]];
 			}
 			if (dep[x] < dep[y]) swap(x, y);
-			ans = (ans + tree.query(1, 1, n, tid[y], tid[x]));
+			ans = (ans + tree.query(1, 1, n, tid[y], tid[x])) % P;
+			printf("%d\n", ans);
 		}
 		else if (opt == 3)
 		{
