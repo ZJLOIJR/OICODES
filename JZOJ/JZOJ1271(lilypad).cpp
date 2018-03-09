@@ -64,7 +64,7 @@ void init()
 			if (map[i][j] == 1 && !vis[i * m + j])
 			{
 				cnt = 0; memset(vis2, 0, sizeof(vis2));
-				vis[i * j + 1] = 1;
+				vis[i * m + j] = 1;
 				dfs(i, j);
 				for (int k = 1; k <= cnt; k++)
 					for (int l = 1; l <= cnt; l++)
