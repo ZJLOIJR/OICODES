@@ -98,7 +98,7 @@ void solve()
 			{
 				dis[v] = dis[u] + len[i];
 				f[v] = f[u];
-				if (!vis[v] && v != xto * m + yto)
+				if (!vis[v])
 				{
 					vis[v] = 1;
 					que[++tail] = v;
