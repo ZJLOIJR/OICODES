@@ -4,26 +4,30 @@
 #include <cstdlib>
 
 const int N = 1e5 + 3;
-const double exp = 1e-12;
+const double EXP = 1e-12;
 
-int n, a[N];
-double l, r, mid, ans;
+int n;
+double l, r, mid, ans = -1.0, a[N];
 
-inline int read()
+int check(double x)
 {
-	int x = 0, f = 0;
-	char c = getchar();
-	for (; c < '0' || c > '9'; c = getchar()) if (c == '-') f = 1;
-	for (; c >= '0' && c <= '9'; c = getchar()) x = (x << 1) + (x << 3) + (c ^ '0');
-	return f ? -x : x;
+	double ret = 0, sum = 0.0, maxx = -1e9;
+	for (int i = 1; i <= n; i++) ret += a[i] - x;
+	for (int i = 2; i <= n - 1; i++)
+	{
+		if (sum < 0) sum = 0;
+		sum += a[i] - x;
+		if (sum > maxx) maxx = sum;
+	}
+	return ret <= maxx;
 }
 
 int main()
 {
-	n = read();
-	for (int i = 1; i <= n; i++) a[i] = read();
-	l = 0.0, r = 10000.0;
-	while (r - l >= exp)
+	scanf("%d", &n);
+	for (int i = 1; i <= n; i++) scanf("%lf", a + i);
+	l = 1.0, r = n * 10000.0;
+	while (r - l >= EXP)
 	{
 		mid = (l + r) / 2;
 		if (check(mid)) r = mid, ans = mid;
