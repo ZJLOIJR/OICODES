@@ -16,7 +16,7 @@ inline int read()
 }
 
 int n, m, s, t, ans = 0, tot = 1;
-int st[N * N], to[N * N * 10], nx[N * N * 10], len[N * N * 10];
+int st[N * N], to[N * N * 10], nx[N * N * 10], len[N * N * 10], map[N][N];
 
 inline void add(int u, int v, int w) { to[++tot] = v, nx[tot] = st[u], len[tot] = w, st[u] = tot; }
 inline int id(int x, int y) { return (x - 1) * m + y; }
@@ -63,16 +63,30 @@ int main()
 	s = 0, t = n * m + 1;
 	for (int i = 1; i <= n; i++)
 		for (int j = 1; j <= m; j++)
+			scanf("%d", &map[i][j]);
+	for (int i = 1; i <= n; i++)
+		for (int j = 1; j <= m; j++)
 		{
-			int tmp = read();
-			if (tmp == 1) add(s, id(i, j), INF), add(id(i, j), s, 0);
-			if (tmp == 2) add(id(i, j), t, INF), add(t, id(i, j), 0);
-			if (tmp == 0 || tmp == 1)
+			if (map[i][j] == 1)
+			{
+				add(s, id(i, j), INF), add(id(i, j), s, 0);
 				for (int k = 0; k < 4; k++)
 				{
 					int dx = i + dir[k][0], dy = j + dir[k][1];
-					if (check(dx, dy)) add(id(i, j), id(dx, dy), 1), add(id(dx, dy), id(i, j), 0);
+					if (!check(dx, dy)) continue;
+					if (map[dx][dy] == 0 || map[dx][dy] == 2) add(id(i, j), id(dx, dy), 1), add(id(dx, dy), id(i, j), 0);
 				}
+			}
+			if (map[i][j] == 2) add(id(i, j), t, INF), add(t, id(i, j), 0);
+			if (map[i][j] == 0)
+			{
+				for (int k = 0; k < 4; k++)
+				{
+					int dx = i + dir[k][0], dy = j + dir[k][1];
+					if (!check(dx, dy)) continue;
+					if (map[dx][dy] == 0 || map[dx][dy] == 2) add(id(i, j), id(dx, dy), 1), add(id(dx, dy), id(i, j), 0);
+				}
+			}
 		}
 	while (bfs())
 	{
