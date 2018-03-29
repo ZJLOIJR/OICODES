@@ -4,7 +4,7 @@
 #include <cstdlib>
 
 const int N = 1e2 + 3, INF = 0x3f3f3f3f;
-const int dir[4][2] = {{1, 0}, {0, 1}, {-1, 0}, {-1, 0}};
+const int dir[4][2] = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
 
 inline int read()
 {
@@ -74,7 +74,8 @@ int main()
 				{
 					int dx = i + dir[k][0], dy = j + dir[k][1];
 					if (!check(dx, dy)) continue;
-					if (map[dx][dy] == 0 || map[dx][dy] == 2) add(id(i, j), id(dx, dy), 1), add(id(dx, dy), id(i, j), 0);
+					if (map[dx][dy] == 0 || map[dx][dy] == 2)
+						add(id(i, j), id(dx, dy), 1), add(id(dx, dy), id(i, j), 0);
 				}
 			}
 			if (map[i][j] == 2) add(id(i, j), t, INF), add(t, id(i, j), 0);
@@ -84,7 +85,8 @@ int main()
 				{
 					int dx = i + dir[k][0], dy = j + dir[k][1];
 					if (!check(dx, dy)) continue;
-					if (map[dx][dy] == 0 || map[dx][dy] == 2) add(id(i, j), id(dx, dy), 1), add(id(dx, dy), id(i, j), 0);
+					if (map[dx][dy] == 0 || map[dx][dy] == 2)
+						add(id(i, j), id(dx, dy), 1), add(id(dx, dy), id(i, j), 0);
 				}
 			}
 		}
