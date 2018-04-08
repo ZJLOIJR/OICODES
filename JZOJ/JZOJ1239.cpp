@@ -2,6 +2,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+using namespace std;
 
 const int N = 1e2 + 3;
 const double INF = 66666.0;
@@ -31,7 +32,7 @@ int main()
 		add(s, i, INF);
 		for (int j = 1; j <= n; j++)
 		{
-			
+			add(i, i + n, log(a[i][j])), add(i + n, i + n * 2, );
 		}
 	}
 	ans = 0;
