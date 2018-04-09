@@ -60,7 +60,7 @@ int main()
 	for (int i = 1; i <= m; i++)
 		scanf("%d%d", &u, &v), add(v, u);
 	memset(f, 0xff, sizeof(f));
-	search(1);
+	search(2);
 	f[1] = 1; dfs(2);
 	if (flag) print(f[2], 9);
 	else printf("%lld\n", f[2]);
