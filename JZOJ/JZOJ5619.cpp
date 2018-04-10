@@ -18,8 +18,8 @@ int cmp2(note x, note y) { return x.b > y.b; }
 
 int main()
 {
-	//freopen("resist.in", "r", stdin);
-	//freopen("resist.out", "w", stdout);
+	freopen("resist.in", "r", stdin);
+	freopen("resist.out", "w", stdout);
 
 	scanf("%lld%lld%lld%*d", &n, &c, &d);
 	for (int i = 1; i <= n; i++)
