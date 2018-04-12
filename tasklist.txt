@@ -1,2 +1,4 @@
-JZOJ1496 水题
+JZOJ1496 水题.
+SplayTree 复习一下,背牢模板.
+bzoj 1066 蜥蜴 网络流.
 http://blog.csdn.net/blackjack_/article/details/74997479 树状数组区间加法and区间求和
