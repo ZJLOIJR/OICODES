@@ -10,14 +10,13 @@ struct SplayTree
 {
 	int key[N], son[N][2], fa[N], siz[N], cnt[N];
 	void upd(int x) { siz[x] = siz[son[x][0]] + siz[son[x][1]] + cnt[x]; }
-	int get(int x) { return son[fa[x]][1] == x; }
 	void rotate(int x)
 	{
-		int y = fa[x], z = fa[y], k = get(x);
+		int y = fa[x], z = fa[y], k = (son[y][1] == x);
 		son[y][k] = son[x][!k]; if (son[x][!k]) fa[son[x][!k]] = y;
 		son[x][!k] = y, fa[y] = x;
 		fa[x] = z; if (z) son[z][son[z][1] == y] = x;
-		upd(y);
+		upd(y), upd(x);
 	}
 	void splay(int x, int anc)
 	{
@@ -25,7 +24,7 @@ struct SplayTree
 		{
 			z = fa[y];
 			if (z == anc) continue;
-			rotate(get(x) == get(y) ? y : x);
+			rotate((son[z][0] == y) == (son[y][0] == x) ? y : x);
 		}
 		if (!anc) root = x, upd(x);
 	}
@@ -91,7 +90,7 @@ struct SplayTree
 int main()
 {
 	scanf("%d", &q);
-	tree.insert(-0x7f7f7f7f), tree.insert(0x7f7f7f7f);
+	tree.insert(-0x7fffffff), tree.insert(0x7fffffff);
 	while (q--)
 	{
 		scanf("%d%d", &opt, &x);
@@ -104,6 +103,3 @@ int main()
 	}
 	return 0;
 }
-
-//5632 3922
-//https://blog.csdn.net/gengmingrui/article/details/49978543
