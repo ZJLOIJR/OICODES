@@ -35,8 +35,7 @@ int main()
 						int tmp = f[las][j][k][s];
 						if (tmp >= 0x3f3f3f3f) continue;
 						if (j < m) f[now][j + 1][k][s] = min(f[now][j + 1][k][s], tmp);
-						if (k != a[i + 1]) tmp++;
-						f[now][j][a[i + 1]][s | bit(a[i + 1])] = min(f[now][j][a[i + 1]][s | bit(a[i + 1])], tmp);
+						f[now][j][a[i + 1]][s | bit(a[i + 1])] = min(f[now][j][a[i + 1]][s | bit(a[i + 1])], tmp + (k != a[i + 1]));
 					}
 		}
 		for (int j = 0; j <= m; j++)
@@ -44,7 +43,7 @@ int main()
 				for (int s = 0; s <= maxs; s++)
 				{
 					int nows = maxs - s, tmp = f[n & 1][j][k][s];
-					while (nows > 0)
+					while (nows)
 					{
 						tmp += (nows & 1);
 						nows >>= 1;
@@ -55,5 +54,3 @@ int main()
 	}
 	return 0;
 }
-
-// 3853
