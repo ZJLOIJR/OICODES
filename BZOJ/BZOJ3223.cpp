@@ -36,14 +36,14 @@ struct SplayTree
 			if (z == anc) continue;
 			rotate((son[y][0] == x) == (son[z][0] == y) ? y : x);
 		}
-		if (!anc) root = x, upd(x), down(x);
+		if (!anc) root = x;
 	}
 	void insert(int x)
 	{
 		int now = root, y = 0;
 		while (now && key[now] != x) { y = now, now = son[now][x > key[now]]; }
 		now = ++tot;
-		fa[now] = y, rev[now] = 0, key[now] = x, siz[now] = 1;
+		fa[now] = y, key[now] = x, siz[now] = 1;
 		if (y) son[y][x > key[y]] = now;
 		splay(now, 0);
 	}
@@ -53,6 +53,7 @@ struct SplayTree
 		int now = root, tmp;
 		while (1)
 		{
+			down(now);
 			tmp = son[now][0];
 			if (siz[tmp] + 1 < k) k -= siz[tmp] + 1, now = son[now][1];
 			else if (siz[tmp] >= k) now = tmp;
@@ -78,9 +79,9 @@ struct SplayTree
 int main()
 {
 	scanf("%d%d", &n, &q);
-	tree.insert(INF);
-	for (int i = 1; i <= n; i++) tree.insert(i);
 	tree.insert(-INF);
+	for (int i = 1; i <= n; i++) tree.insert(i);
+	tree.insert(INF);
 	while (q--)
 	{
 		scanf("%d%d", &l, &r);
