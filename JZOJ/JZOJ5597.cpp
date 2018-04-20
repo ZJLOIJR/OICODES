@@ -8,8 +8,7 @@
 using namespace std;
 
 typedef long long ll;
-const int N = 5e4 + 3;
-const ll INF = 0x3f3f3f3f;
+const int N = 5e4 + 3, INF = 0x3f3f3f3f;
 
 int n, q, len;
 ll g, r, t, d[N], sum[N], arr[N], mo[N], f[N];
@@ -25,7 +24,7 @@ inline ll read()
 
 struct SegmentTree
 {
-	int mi[N];
+	int mi[N << 2];
 	void insert(int rt, int l, int r, int po, int val)
 	{
 		if (l == r) { mi[rt] = min(mi[rt], val); return; }
@@ -37,7 +36,7 @@ struct SegmentTree
 	int qrymin(int rt, int l, int r, int ql, int qr)
 	{
 		if (ql <= l && r <= qr) return mi[rt];
-		int mid = l + r >> 1, ret = N;
+		int mid = l + r >> 1, ret = INF;
 		if (ql <= mid) ret = min(ret, qrymin(lson, l, mid, ql, qr));
 		if (mid + 1 <= qr) ret = min(ret, qrymin(rson, mid + 1, r, ql, qr));
 		return ret;
@@ -46,21 +45,21 @@ struct SegmentTree
 
 int main()
 {
-	//freopen("light.in", "r", stdin);
-	//freopen("light.out", "w", stdout);
+	freopen("light.in", "r", stdin);
+	freopen("light.out", "w", stdout);
 
 	memset(tree.mi, 0x3f, sizeof(tree.mi));
 	n = read(), g = read(), r = read();
-	for (int i = 1; i <= n + 1; i++)
-		d[i] = read(), sum[i] = sum[i - 1] + d[i], arr[i] = mo[i] = sum[i] % (g + r);
+	for (int i = 1; i <= n + 1; i++) d[i] = read(), sum[i] = sum[i - 1] + d[i], arr[i] = mo[i] = sum[i] % (g + r);
 	arr[n + 2] = 0, arr[n + 3] = g + r;
-	sort(arr + 1, arr + n + 4); len = unique(arr + 1, arr + n + 4) - arr - 1;
+	sort(arr + 1, arr + n + 4);
+	len = unique(arr + 1, arr + n + 4) - arr - 1;
 	for (int i = n; i >= 1; i--)
 	{
 		ll lval = (mo[i] + g) % (g + r), rval = (mo[i] + g + r - 1) % (g + r);
 		int lx = lower_bound(arr + 1, arr + len + 1, lval) - arr,
 			rx = upper_bound(arr + 1, arr + len + 1, rval) - arr - 1, tmp;
-		if (lx <= rx) tmp = tree.qrymin(1, 1, len, lx, rx);
+		if (lval <= rval) tmp = tree.qrymin(1, 1, len, lx, rx);
 		else tmp = min(tree.qrymin(1, 1, len, lx, len), tree.qrymin(1, 1, len, 1, rx));
 		if (tmp >= INF) f[i] = sum[n + 1] - sum[i];
 		else f[i] = f[tmp] + sum[tmp] - sum[i] + g + r - (sum[tmp] - sum[i]) % (g + r);
@@ -74,7 +73,7 @@ int main()
 		ll lval = (beg + g) % (g + r), rval = (beg + g + r - 1) % (g + r);
 		int lx = lower_bound(arr + 1, arr + len + 1, lval) - arr,
 			rx = upper_bound(arr + 1, arr + len + 1, rval) - arr - 1, tmp;
-		if (lx <= rx) tmp = tree.qrymin(1, 1, len, lx, rx);
+		if (lval <= rval) tmp = tree.qrymin(1, 1, len, lx, rx);
 		else tmp = min(tree.qrymin(1, 1, len, lx, len), tree.qrymin(1, 1, len, 1, rx));
 		if (tmp >= INF) printf("%lld\n", t + sum[n + 1]);
 		else printf("%lld\n", t + sum[tmp] + g + r - (t + sum[tmp]) % (g + r) + f[tmp]);
