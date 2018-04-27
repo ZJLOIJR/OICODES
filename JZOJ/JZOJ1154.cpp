@@ -19,11 +19,7 @@ void dfs(int u)
 	{
 		int v = to[i];
 		if (!vis[v])
-		{
-			dfs(v);
-			f[u][0] = max(f[u][0], max(f[v][0], f[v][1]));
-			f[u][1] += f[v][0];
-		}
+			dfs(v), f[u][0] += max(f[v][0], f[v][1]), f[u][1] += f[v][0];
 	}
 }
 
