@@ -3,34 +3,23 @@
 #include <cstring>
 #include <cstdlib>
 
-typedef long long ll;
-const int N = 2e5 + 3;
+const int K = 52;
 
-int n, m, p, fir, col[N], cost[N];
-ll ans = 0, sum;
-
-inline ll read()
-{
-	ll x = 0, f = 0;
-	char c = getchar();
-	for (; c < '0' || c > '9'; c = getchar()) if (c == '-') f = 1;
-	for (; c >= '0' && c <= '9'; c = getchar()) x = (x << 1) + (x << 3) + (c ^ '0');
-	return f ? -x : x;
-}
+long long ans = 0;
+int n, p, col, cost, now;
+int las[K], sum[K], cnt[K];
 
 int main()
 {
-	n = read(), m = read(), p = read();
-	for (int i = 1; i <= n; i++) col[i] = read(), cost[i] = read();
-	for (int k = 0; k < m; k++)
+	scanf("%d%*d%d", &n, &p);
+	for (int i = 1; i <= n; i++)
 	{
-		sum = 0LL;
-		for (int i = 1; i <= n; i++)
-		{
-			if (cost[i] > p) sum = 0LL;
-			else sum++;
-			if (col[i] == k) ans += sum;
-		}
+		scanf("%d%d", &col, &cost);
+		if (cost <= p) now = i;
+		if (now >= las[col]) sum[col] = cnt[col];
+		las[col] = i;
+		ans += sum[col];
+		cnt[col]++;
 	}
 	printf("%lld\n", ans);
 	return 0;
