@@ -24,9 +24,8 @@ struct matrix
 
 int main()
 {
-	scanf("%lld%lld", &n, &m);
-	n -= 2;
-	base.arr[0][0] = base.arr[0][1] = 1;
+	scanf("%lld%lld", &n, &m); n -= 2;
+	base.arr[0][0] = 2, base.arr[0][1] = 1;
 	mov.arr[0][0] = mov.arr[0][1] = mov.arr[1][0] = 1;
 	ret.arr[0][0] = ret.arr[1][1] = 1;
 	while (n)
