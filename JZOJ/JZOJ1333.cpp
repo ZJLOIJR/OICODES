@@ -19,12 +19,13 @@ ll pow(ll a, ll b, ll mod)
 
 void solve(int l, int r, int lower, int upper)
 {
+	if (l > r) return;
 	int mid = l + r >> 1; ll min = 2147483647LL;
-	for (int i = lower; i <= upper; i++)
-		if ((a[mid] * pow(b[mid], i, d[mid]) % d[mid] + c[mid]) % d[mid] < min)
-			ans[mid] = i, min = (a[mid] * pow(b[mid], i, d[mid]) % d[mid] + c[mid]) % d[mid];
-	if (l == r) return;
-	solve(l, mid, lower, ans[mid]);
+	int base = a[mid] * pow(b[mid], lower, d[mid]) % d[mid];
+	for (int i = lower; i <= upper; i++, base = base * b[mid] % d[mid])
+		if ((base + c[mid]) % d[mid] < min)
+			ans[mid] = i, min = (base + c[mid]) % d[mid];
+	solve(l, mid - 1, lower, ans[mid]);
 	solve(mid + 1, r, ans[mid], upper);
 }
 
