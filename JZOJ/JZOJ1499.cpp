@@ -1,75 +1,59 @@
+#pragma GCC optimize(2) //不想打一般的字符串哈希了，只能无耻开O(2)
 #include <map>
-#include <cmath>
-#include <cstdio>
-#include <string>
-#include <cstring>
-#include <cstdlib>
 #include <iostream>
+#include <string>
 using namespace std;
 
-const int N = 1e5 + 3, PARALLEL = 0, INTERSECT = 1;
+const int N = 200000;
 
-int n, m, tot = 0;
-int fa[N << 1], dis[N << 1];
-map<string, int> id;
+int n, m, tot = 0, fa[N * 2 + 7];
 string a, b, c;
+map<string, int> buc;
 
-inline int rel(string s)
-{ if (s[0] == 'p') return 0; else return 1; }
-
-inline int getfa(int x)
-{
-	if (fa[x] == x) return x;
-	int father = getfa(fa[x]);
-	dis[x] = (dis[x] + dis[fa[x]]) % 2;
-	return fa[x] = father;
-}
-
-inline int get_relation(int u, int v)
-{
-	fa[u] = getfa(u), fa[v] = getfa(v);
-	if (fa[u] != fa[v]) return -1;
-	return (dis[u] + dis[v]) % 2;
-}
-
-void init()
-{
-	cin >> n >> m;
-	for (int i = 1; i <= 2 * n; i++) fa[i] = i;
-	for (int i = 1; i <= n; i++)
-	{
-		cin >> a >> b >> c;
-		if (!id[a]) id[a] = ++tot;
-		if (!id[b]) id[b] = ++tot;
-		int tmp = get_relation(id[a], id[b]);
-		if (tmp != -1 && rel(c) != tmp)
-		{
-			cout << "Waterloo" << endl;
-			exit(0);
-		}
-		fa[id[a]] = id[b], dis[id[a]] = rel(c);
-	}
-}
-
-void solve()
-{
-	while (m--)
-	{
-		cin >> a >> b;
-		int tmp = get_relation(id[a], id[b]);
-		if (tmp == PARALLEL)
-			cout << "parallel" << endl;
-		else if (tmp == INTERSECT)
-			cout << "intersect" << endl;
-		else
-			cout << "unknown" << endl;
-	}
-}
+int getfa(int x) { return fa[x] == x ? x : fa[x] = getfa(fa[x]); }
+void link(int x, int y) { fa[getfa(y)] = getfa(x); }
 
 int main()
 {
-	freopen("IN", "r", stdin);
-	init();
-	solve();
+	ios::sync_with_stdio(false);
+	cin >> n >> m;
+	for (int i = 1; i <= 400000; i++) fa[i] = i;
+	for (int i = 1; i <= n; i++)
+	{
+		cin >> a >> b >> c;
+		if (!buc[a]) buc[a] = ++tot;
+		if (!buc[b]) buc[b] = ++tot;
+		int x = buc[a], y = buc[b];
+		if (c[0] == 'p')
+		{
+			if (getfa(x + N) == getfa(y) || getfa(x) == getfa(y + N))
+			{
+				printf("Waterloo\n");
+				return 0;
+			}
+			link(x, y), link(x + N, y + N);
+		}
+		else
+		{
+			if (getfa(x + N) == getfa(y + N) || getfa(x) == getfa(y))
+			{
+				printf("Waterloo\n");
+				return 0;
+			}
+			link(x + N, y), link(x, y + N);
+		}
+	}
+	for (int i = 1; i <= m; i++)
+	{
+		cin >> a >> b;
+		if (!buc[a] || !buc[b]) printf("unknown\n");
+		else
+		{
+			int x = buc[a], y = buc[b];
+			if (getfa(x) == getfa(y) || getfa(x + N) == getfa(y + N)) printf("parallel\n");
+			else if (getfa(x + N) == getfa(y) || getfa(x) == getfa(y + N)) printf("intersect\n");
+			else printf("unknown\n");
+		}
+	}
 	return 0;
 }
