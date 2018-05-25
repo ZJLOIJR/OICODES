@@ -48,7 +48,7 @@ void insert(int &rt, int fa, int l, int r, int po)
 }
 int query(int rt, int fa, int l, int r, int ql, int qr)
 {
-	if (!rt) return 0;
+	if (!rt || ql > qr) return 0;
 	if (ql <= l && r <= qr) return sum[rt] - sum[fa];
 	int mid = l + r >> 1, ret = 0;
 	if (ql <= mid) ret += query(lson[rt], lson[fa], l, mid, ql, qr);
@@ -69,37 +69,36 @@ void solve()
 {
 	while (q--)
 	{
-		int tmpx = read(), tmpy = read(), k = read();
-		tmpx ^= lastans, tmpy ^= lastans, k ^= lastans, lastans = 0;
-		int x = tmpx, y = tmpy, ans = 0;
+		int tmpx = read() ^ lastans, tmpy = read() ^ lastans, k = read() ^ lastans, x = tmpx, y = tmpy, ans = 0;
+		lastans = 0;
 		while (top[x] != top[y])
 		{
 			if (dep[top[x]] < dep[top[y]]) x ^= y ^= x ^= y;
-			ans += query(root[tid[x]], root[tid[top[x]]], 1, m, 1, k);
+			ans += query(root[tid[x]], root[tid[top[x]] - 1], 1, m, 1, k - 1);
 			x = fa[top[x]];
 		}
 		if (dep[x] < dep[y]) x ^= y ^= x ^= y;
-		ans += query(root[tid[x]], root[tid[y]], 1, m, 1, k);
+		ans += query(root[tid[x]], root[tid[y] - 1], 1, m, 1, k - 1);
 		printf("%d ", ans), lastans ^= ans;
 		x = tmpx, y = tmpy, ans = 0;
 		while (top[x] != top[y])
 		{
 			if (dep[top[x]] < dep[top[y]]) x ^= y ^= x ^= y;
-			ans += query(root[tid[x]], root[tid[top[x]]], 1, m, k, k);
+			ans += query(root[tid[x]], root[tid[top[x]] - 1], 1, m, k, k);
 			x = fa[top[x]];
 		}
 		if (dep[x] < dep[y]) x ^= y ^= x ^= y;
-		ans += query(root[tid[x]], root[tid[y]], 1, m, k, k);
+		ans += query(root[tid[x]], root[tid[y] - 1], 1, m, k, k);
 		printf("%d ", ans), lastans ^= ans;
 		x = tmpx, y = tmpy, ans = 0;
 		while (top[x] != top[y])
 		{
 			if (dep[top[x]] < dep[top[y]]) x ^= y ^= x ^= y;
-			ans += query(root[tid[x]], root[tid[top[x]]], 1, m, k, m);
+			ans += query(root[tid[x]], root[tid[top[x]] - 1], 1, m, k + 1, m);
 			x = fa[top[x]];
 		}
 		if (dep[x] < dep[y]) x ^= y ^= x ^= y;
-		ans += query(root[tid[x]], root[tid[y]], 1, m, k, m);
+		ans += query(root[tid[x]], root[tid[y] - 1], 1, m, k + 1, m);
 		printf("%d\n", ans), lastans ^= ans;
 	}
 }
