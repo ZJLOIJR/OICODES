@@ -1,8 +1,5 @@
 https://jzoj.net/senior/#contest/home/2077
 https://jzoj.net/senior/#contest/index/27
-JZOJ 1287
-JZOJ 2814
-JZOJ 1337
 SplayTree 复习一下,背牢模板.
 //bzoj 1066 蜥蜴 网络流.
 http://blog.csdn.net/blackjack_/article/details/74997479 树状数组区间加法and区间求和
