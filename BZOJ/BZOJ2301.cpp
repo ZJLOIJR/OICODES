@@ -3,7 +3,7 @@
 #include <cstdlib>
 inline int min(int a, int b) { return a < b ? a : b; }
 
-const int N = 5e4 - 7;
+const int N = 5e4 + 7;
 
 int T, a, b, c, d, k;
 int tot = 0, check[N], prime[N / 10], mu[N], sum[N];
