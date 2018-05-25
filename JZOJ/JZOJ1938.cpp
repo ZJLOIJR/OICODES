@@ -11,13 +11,14 @@ const ll P = 20101009;
 int n, m, tot = 0, check[N], prime[N / 10], mu[N], sum[N];
 ll ans = 0;
 
+inline ll getsum(ll n) { return n * (n + 1) % P * 10050505LL % P; }
 ll solve(int n, int m)
 {
 	ll ret = 0;
 	for (int l = 1, r; l <= n; l = r + 1)
 	{
 		r = min(n / (n / l), m / (m / l));
-		ret = (ret + (sum[r] - sum[l - 1] + P) % P * (1LL + (n / l)) * (n / l) / 2 % P * (1LL + (m / l)) * (m / l) / 2 % P) % P;
+		ret = (ret + (sum[r] - sum[l - 1] + P) % P * getsum(n / l) % P * getsum(m / l) % P) % P;
 	}
 	return ret;
 }
@@ -30,7 +31,6 @@ int main()
 	for (int i = 2; i <= n; i++)
 	{
 		if (!check[i]) prime[++tot] = i, mu[i] = -1;
-		sum[i] = (sum[i - 1] + mu[i] * i % P * i % P) % P;
 		for (int j = 1; j <= tot; j++)
 		{
 			if (prime[j] * i > n) break;
@@ -39,10 +39,11 @@ int main()
 			else { mu[prime[j] * i] = 0; break; }
 		}
 	}
+	for (int i = 2; i <= n; i++) sum[i] = (sum[i - 1] + mu[i] * i % P * i % P) % P;
 	for (int g = 1, r; g <= n; g = r + 1)
 	{
 		r = min(n / (n / g), m / (m / g));
-		ans = (ans + (r - g + 1) * 1LL * (r + g) / 2 % P * solve(n / g, m / g) % P) % P;
+		ans = (ans + (r - g + 1LL) * (r + g) % P * 10050505LL % P * solve(n / g, m / g) % P) % P;
 	}
 	printf("%lld\n", ans);
 	return 0;
