@@ -14,28 +14,6 @@ inline int read()
 const int N = 270000, M = 140000;
 
 int n, m, q, lastans, a[N];
-int u, v, tot = 0, dfn = 0, st[N], to[N << 1], nx[N << 1], fa[N], dep[N], siz[N], tid[N], top[N], son[N], dfsorder[N];
-inline void add(int u, int v) { to[++tot] = v, nx[tot] = st[u], st[u] = tot; }
-void dfs1(int u)
-{
-	siz[u] = 1; int mxsiz = 0;
-	for (int i = st[u]; i; i = nx[i])
-		if (to[i] != fa[u])
-		{
-			int v = to[i];
-			fa[v] = u, dep[v] = dep[u] + 1, dfs1(v), siz[u] += siz[v];
-			if (siz[v] > mxsiz) mxsiz = siz[v], son[u] = v;
-		}
-}
-void dfs2(int u, int anc)
-{
-	tid[u] = ++dfn, dfsorder[dfn] = u, top[u] = anc;
-	if (son[u]) dfs2(son[u], anc);
-	for (int i = st[u]; i; i = nx[i])
-		if (to[i] != fa[u] && to[i] != son[u])
-			dfs2(to[i], to[i]);
-}
-
 int cnt = 0, root[N], sum[N * 20], lson[N * 20], rson[N * 20];
 void insert(int &rt, int fa, int l, int r, int po)
 {
@@ -46,14 +24,37 @@ void insert(int &rt, int fa, int l, int r, int po)
 	if (po <= mid) rson[rt] = rson[fa], insert(lson[rt], lson[fa], l, mid, po);
 	else lson[rt] = lson[fa], insert(rson[rt], rson[fa], mid + 1, r, po);
 }
-int query(int rt, int fa, int l, int r, int ql, int qr)
+int query(int u, int v, int lca, int falca, int l, int r, int ql, int qr)
 {
-	if (!rt || ql > qr) return 0;
-	if (ql <= l && r <= qr) return sum[rt] - sum[fa];
+	if (ql > qr) return 0;
+	if (ql <= l && r <= qr) return sum[u] + sum[v] - sum[lca] - sum[falca];
 	int mid = l + r >> 1, ret = 0;
-	if (ql <= mid) ret += query(lson[rt], lson[fa], l, mid, ql, qr);
-	if (mid + 1 <= qr) ret += query(rson[rt], rson[fa], mid + 1, r, ql, qr);
+	if (ql <= mid) ret += query(lson[u], lson[v], lson[lca], lson[falca], l, mid, ql, qr);
+	if (mid + 1 <= qr) ret += query(rson[u], rson[v], rson[lca], rson[falca], mid + 1, r, ql, qr);
 	return ret;
+}
+int u, v, tot = 0, st[N], to[N << 1], nx[N << 1], anc[N][21], dep[N];
+inline void add(int u, int v) { to[++tot] = v, nx[tot] = st[u], st[u] = tot; }
+void dfs(int u)
+{
+	insert(root[u], root[anc[u][0]], 1, m, a[u]);
+	for (int i = st[u]; i; i = nx[i])
+		if (to[i] != anc[u][0])
+			dep[to[i]] = dep[u] + 1, anc[to[i]][0] = u, dfs(to[i]);
+}
+void lcapredo()
+{
+	for (int j = 1; j <= 20; j++)
+		for (int i = 1; i <= n; i++)
+			anc[i][j] = anc[anc[i][j - 1]][j - 1];
+}
+int getlca(int u, int v)
+{
+	if (dep[u] < dep[v]) u ^= v ^= u ^= v;
+	for (int i = 20; i >= 0; i--) if (dep[anc[u][i]] >= dep[v]) u = anc[u][i];
+	if (u == v) return u;
+	for (int i = 20; i >= 0; i--) if (anc[u][i] != anc[v][i]) u = anc[u][i], v = anc[v][i];
+	return anc[u][0];
 }
 
 void init()
@@ -61,44 +62,22 @@ void init()
 	n = read(), m = read(), q = read();
 	for (int i = 1; i <= n; i++) a[i] = read();
 	for (int i = 1; i < n; i++) u = read(), v = read(), add(u, v), add(v, u);
-	dep[1] = 1, dfs1(1), dfs2(1, 1);
-	for (int i = 1; i <= n; i++) insert(root[i], root[i - 1], 1, m, a[dfsorder[i]]);
+	dep[1] = 1, dfs(1);
+	lcapredo();
 }
 
 void solve()
 {
 	while (q--)
 	{
-		int tmpx = read() ^ lastans, tmpy = read() ^ lastans, k = read() ^ lastans, x = tmpx, y = tmpy, ans = 0;
+		int x = read() ^ lastans, y = read() ^ lastans, k = read() ^ lastans, ans = 0, lca;
 		lastans = 0;
-		while (top[x] != top[y])
-		{
-			if (dep[top[x]] < dep[top[y]]) x ^= y ^= x ^= y;
-			ans += query(root[tid[x]], root[tid[top[x]] - 1], 1, m, 1, k - 1);
-			x = fa[top[x]];
-		}
-		if (dep[x] < dep[y]) x ^= y ^= x ^= y;
-		ans += query(root[tid[x]], root[tid[y] - 1], 1, m, 1, k - 1);
+		lca = getlca(x, y);
+		ans = query(root[x], root[y], root[lca], root[anc[lca][0]], 1, m, 1, k - 1);
 		printf("%d ", ans), lastans ^= ans;
-		x = tmpx, y = tmpy, ans = 0;
-		while (top[x] != top[y])
-		{
-			if (dep[top[x]] < dep[top[y]]) x ^= y ^= x ^= y;
-			ans += query(root[tid[x]], root[tid[top[x]] - 1], 1, m, k, k);
-			x = fa[top[x]];
-		}
-		if (dep[x] < dep[y]) x ^= y ^= x ^= y;
-		ans += query(root[tid[x]], root[tid[y] - 1], 1, m, k, k);
+		ans = query(root[x], root[y], root[lca], root[anc[lca][0]], 1, m, k, k);
 		printf("%d ", ans), lastans ^= ans;
-		x = tmpx, y = tmpy, ans = 0;
-		while (top[x] != top[y])
-		{
-			if (dep[top[x]] < dep[top[y]]) x ^= y ^= x ^= y;
-			ans += query(root[tid[x]], root[tid[top[x]] - 1], 1, m, k + 1, m);
-			x = fa[top[x]];
-		}
-		if (dep[x] < dep[y]) x ^= y ^= x ^= y;
-		ans += query(root[tid[x]], root[tid[y] - 1], 1, m, k + 1, m);
+		ans = query(root[x], root[y], root[lca], root[anc[lca][0]], 1, m, k + 1, m);
 		printf("%d\n", ans), lastans ^= ans;
 	}
 }
