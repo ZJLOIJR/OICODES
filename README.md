@@ -38,7 +38,7 @@ Having trouble with Pages? Check out our [documentation](https://help.github.com
 
 ### Hacker Johnson
 
-$ r=a(1-sin\theta) $
+$r=a(1-sin\theta)$
 
 ### JZOJ2256 Data structures
 ```cpp
