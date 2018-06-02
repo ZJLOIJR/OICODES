@@ -38,7 +38,7 @@ Having trouble with Pages? Check out our [documentation](https://help.github.com
 
 ### Hacker Johnson
 
-<a href="http://www.codecogs.com/eqnedit.php?latex=$r=a(1-sin\theta)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?$r=a(1-sin\theta)" title="$r=a(1-sin\theta)" /></a>
+<a href="http://www.codecogs.com/eqnedit.php?latex=\bg_white&space;\fn_cs&space;$r=a(1-sin\theta)" target="_blank"><img src="http://latex.codecogs.com/png.latex?\bg_white&space;\fn_cs&space;$r=a(1-sin\theta)" title="$r=a(1-sin\theta)" /></a>
 
 ### JZOJ2256 Data structures
 ```cpp
