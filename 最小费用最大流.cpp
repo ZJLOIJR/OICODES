@@ -39,7 +39,7 @@ int bfs()
 		for (int i = st[u]; i; i = nx[i])
 		{
 			int v = to[i];
-			if (min(minflow[u], len[i]) > minflow[v] || (min(minflow[u], len[i]) == minflow[v] && dis[u] + cost[i] < dis[v]))
+			if (len[i] > 0 && dis[u] + cost[i] < dis[v])
 			{
 				minflow[v] = min(minflow[u], len[i]), dis[v] = dis[u] + cost[i], pre[v] = i;
 				if (!vis[v]) que[++tail] = v, vis[v] = 1;
@@ -59,9 +59,9 @@ int upd(int f)
 int main()
 {
 	n = read(), m = read(), s = read(), t = read();
-	for (int i = 1; i <= m; i++) add(read(), read(), read(), read());
-	int ans = 0, flow, ret = 0;
-	while (flow = bfs()) ans += upd(flow), ret += flow;
+	for (int i = 1, a, b, c, d; i <= m; i++) a = read(), b = read(), c = read(), d = read(), add(a, b, c, d);
+	int ans = 0, ret = 0;
+	while (int flow = bfs()) ans += upd(flow), ret += flow;
 	printf("%d %d\n", ret, ans);
 	return 0;
 }
