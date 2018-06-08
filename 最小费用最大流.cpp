@@ -15,7 +15,7 @@ inline int min(int a, int b) { return a < b ? a : b; }
 const int N = 5e3 + 7, M = 5e4 + 7;
 
 int n, m, s, t, tot = 1;
-int st[N], to[N << 1], nx[N << 1], cost[N << 1], len[N << 1];
+int st[N], to[M << 1], nx[M << 1], cost[M << 1], len[M << 1];
 
 inline void add(int u, int v, int l, int c)
 {
