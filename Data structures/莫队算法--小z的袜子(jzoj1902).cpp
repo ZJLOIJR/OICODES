@@ -12,7 +12,7 @@ int n, m, block, c[N], b[N];
 struct ques { int l, r, id; } q[N];
 ll tmp = 0, sum[N], ans[N][2];
 
-int cmp(ques x, ques y) { return b[x.l] == b[y.l] ? x.r < y.r : x.l < y.l; }
+int cmp(ques x, ques y) { return b[x.l] == b[y.l] ? x.r < y.r : b[x.l] < b[y.l]; }
 void add(int po, int typ) { tmp -= sum[c[po]] * sum[c[po]], sum[c[po]] += typ, tmp += sum[c[po]] * sum[c[po]]; }
 ll gcd(ll a, ll b) { return b ? gcd(b, a % b) : a; }
 
@@ -20,7 +20,7 @@ int main()
 {
 	scanf("%d%d", &n, &m);
 	block = sqrt(n);
-	for (int i = 1; i <= n; i++) scanf("%d", c + i), b[i] = i / block + 1;
+	for (int i = 1; i <= n; i++) scanf("%d", c + i), b[i] = (i - 1) / block + 1;
 	for (int i = 1; i <= m; i++) scanf("%d%d", &q[i].l, &q[i].r), q[i].id = i;
 	sort(q + 1, q + m + 1, cmp);
 	int l = 1, r = 0; tmp = 0;
