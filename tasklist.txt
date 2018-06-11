@@ -9,3 +9,4 @@ page 34
 https://www.cnblogs.com/qdscwyy/p/8012843.html 莫比乌斯函数
 https://www.cnblogs.com/y7070/p/5000471.html 可持久化字典树
 https://www.lydsy.com/JudgeOnline/wttl/thread.php?tid=2985
+https://blog.csdn.net/linjiayang2016/article/details/80299776
