@@ -35,13 +35,13 @@ int main()
 	for (int i = 1; i <= n; i++) a[i] = read(), sum[i] = sum[i - 1] ^ a[i], b[i] = (i - 1) / block + 1;
 	for (int i = 1; i <= m; i++) q[i].l = read(), q[i].r = read(), q[i].id = i;
 	sort(q + 1, q + m + 1, cmp);
+	buc[sum[0]]++;
 	for (int i = 1, l = 1, r = 0; i <= m; i++)
 	{
-		while (l < q[i].l) add(l, -1), l++;
-		while (l > q[i].l) add(l - 1, 1), l--;
 		while (r < q[i].r) add(r + 1, 1), r++;
 		while (r > q[i].r) add(r, -1), r--;
-		printf("%d %d %d\n", q[i].id, q[i].l, q[i].r);
+		while (l < q[i].l) add(l - 1, -1), l++;
+		while (l > q[i].l) l--, add(l - 1, 1);
 		if (q[i].l == q[i].r) { ans[q[i].id] = 1; continue; }
 		ans[q[i].id] = tmp;
 	}
