@@ -12,7 +12,7 @@ int n, m, block, c[N], b[N];
 struct ques { int l, r, id; } q[N];
 ll tmp = 0, sum[N], ans[N][2];
 
-int cmp(ques x, ques y) { return b[x.l] == b[y.l] ? x.r < y.r : b[x.l] < b[y.l]; }
+int cmp(ques x, ques y) { return b[x.l] == b[y.l] ? x.r < y.r : x.l < y.l; }
 void add(int po, int typ) { tmp -= sum[c[po]] * sum[c[po]], sum[c[po]] += typ, tmp += sum[c[po]] * sum[c[po]]; }
 ll gcd(ll a, ll b) { return b ? gcd(b, a % b) : a; }
 
