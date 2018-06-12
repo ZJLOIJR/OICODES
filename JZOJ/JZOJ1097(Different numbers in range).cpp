@@ -80,3 +80,55 @@ int main()
 	solve();
 	return 0;
 }
+//莫队写法
+#include <cmath>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+#include <algorithm>
+using namespace std;
+
+inline int read()
+{
+	int x = 0, f = 0;
+	char c = getchar();
+	for (; c < '0' || c > '9'; c = getchar()) if (c == '-') f = 1;
+	for (; c >= '0' && c <= '9'; c = getchar()) x = (x << 1) + (x << 3) + (c ^ '0');
+	return f ? -x : x;
+}
+
+const int N = 5e4 + 7, M = 2e5 + 7;
+
+int n, m, tmp = 0, a[N], b[N];
+int buc[1000007];
+struct ques { int l, r, id; } q[M];
+int ans[M];
+
+int cmp(ques x, ques y) { return b[x.l] == b[y.l] ? x.r < y.r : x.l < y.l; }
+
+void add(int po, int typ)
+{
+	buc[a[po]] += typ;
+	if (typ == 1) tmp += (buc[a[po]] == 1);
+	else tmp -= (buc[a[po]] == 0);
+}
+
+int main()
+{
+	n = read();
+	int block = sqrt(n);
+	for (int i = 1; i <= n; i++) a[i] = read(), b[i] = (i - 1) / block + 1;
+	m = read();
+	for (int i = 1; i <= m; i++) q[i].l = read(), q[i].r = read(), q[i].id = i;
+	sort(q + 1, q + m + 1, cmp);
+	for (int i = 1, l = 1, r = 0; i <= m; i++)
+	{
+		while (r > q[i].r) add(r, -1), r--;
+		while (r < q[i].r) add(r + 1, 1), r++;
+		while (l > q[i].l) add(l - 1, 1), l--;
+		while (l < q[i].l) add(l, -1), l++;
+		ans[q[i].id] = tmp;
+	}
+	for (int i = 1; i <= m; i++) printf("%d\n", ans[i]);
+	return 0;
+}
