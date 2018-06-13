@@ -20,43 +20,35 @@ const ll P = 1e9 + 7;
 
 int n, m, block, a[N], b[N], buc[N];
 struct ques { int l, r, id; } q[N];
-ll tmp, ans[N];
+ll tmp, ans[N], f[N], inv[N];
 
 int cmp(ques x, ques y) { return b[x.l] == b[y.l] ? x.r < y.r : x.l < y.l; }
-
-ll power(ll x, ll y)
-{
-	ll ret = 1;
-	while (y)
-	{
-		if (y & 1) ret = ret * x % P;
-		x = x * x % P, y >>= 1;
-	}
-	return ret;
-}
 
 void add(int po, int typ)
 {
 	if (typ == 1)
 	{
-		if (!buc[a[po]]) tmp = (tmp + a[po]) % P, buc[a[po]]++;
+		if (!buc[a[po]]) tmp = (tmp + a[po]) % P, buc[a[po]]++, f[a[po]] = a[po];
 		else
 		{
-			tmp = (tmp - power(a[po], buc[a[po]]) + P) % P;
-			buc[a[po]]++;
-			tmp = (tmp + power(a[po], buc[a[po]])) % P;
+			tmp = (tmp - f[a[po]] + P) % P;
+			buc[a[po]]++, f[a[po]] = f[a[po]] * a[po] % P;
+			tmp = (tmp + f[a[po]]) % P;
 		}
 	}
 	else
 	{
-		tmp = (tmp - power(a[po], buc[a[po]]) + P) % P;
-		buc[a[po]]--;
-		if (buc[a[po]]) tmp = (tmp + power(a[po], buc[a[po]])) % P;
+		tmp = (tmp - f[a[po]] + P) % P;
+		buc[a[po]]--, f[a[po]] = f[a[po]] * inv[a[po]] % P;
+		if (buc[a[po]]) tmp = (tmp + f[a[po]]) % P;
 	}
 }
 
 int main()
 {
+	for (int i = 1; i <= N - 7; i++) f[i] = 1;
+	inv[1] = 1;
+	for (int i = 2; i <= N - 7; i++) inv[i] = (P - P / i) * inv[P % i] % P;
 	n = read(), m = read(), block = sqrt(n);
 	for (int i = 1; i <= n; i++) a[i] = read(), b[i] = (i - 1) / block + 1;
 	for (int i = 1; i <= m; i++) q[i].l = read(), q[i].r = read(), q[i].id = i;
