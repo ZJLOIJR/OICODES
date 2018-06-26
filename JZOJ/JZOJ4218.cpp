@@ -14,13 +14,14 @@ inline int read()
 }
 inline double sqr(double x) { return x * x; }
 inline double getdis(double xx, double yy, double x_, double y_) { return sqrt(sqr(xx - x_) + sqr(yy - y_)); }
+inline int lowbit(int x) { return x & (-x); }
 
 const int N = 2e5 + 7;
 
 int n, m, ax, ay, bx, by, len1, len2;
 double dis1[N], dis2[N], arr1[N], arr2[N];
 
-int tot = 0, root[N << 2], lson[N * 30], rson[N * 30], sum[N * 30];
+int tot = 0, root[N], lson[N * 100], rson[N * 100], sum[N * 100];
 void add(int &rt, int l, int r, int po)
 {
 	if (!rt) rt = ++tot;
@@ -39,19 +40,14 @@ int get(int rt, int l, int r, int ql, int qr)
 	if (mid + 1 <= qr) ret += get(rson[rt], mid + 1, r, ql, qr);
 	return ret;
 }
-void insert(int rt, int l, int r, int x, int y)
+void insert(int x, int y)
 {
-	if (l == r) { add(root[rt], 1, n, y); return; }
-	int mid = l + r >> 1;
-	if (x <= mid) insert(rt << 1, l, mid, x, y);
-	else insert(rt << 1 | 1, mid + 1, r, x, y);
+	for (; x <= len1; x += lowbit(x)) add(root[x], 1, len2, y);
 }
-int query(int rt, int l, int r, int xx, int yy, int x_, int y_)
+int query(int xx, int yy, int y_)
 {
-	if (xx <= l && r <= x_) return get(root[rt], 1, n, yy, y_);
-	int mid = l + r >> 1, ret = 0;
-	if (xx <= mid) ret += query(rt << 1, l, mid, xx, yy, x_, y_);
-	if (mid + 1 <= x_) ret += query(rt << 1 | 1, mid + 1, r, xx, yy, x_, y_);
+	int ret = 0;
+	for (; xx; xx -= lowbit(xx)) ret += get(root[xx], 1, len2, yy, y_);
 	return ret;
 }
 
@@ -68,13 +64,14 @@ int main()
 	len2 = unique(arr2 + 1, arr2 + n + 1) - arr2 - 1;
 	for (int i = 1; i <= n; i++) dis1[i] = lower_bound(arr1 + 1, arr1 + len1 + 1, dis1[i]) - arr1;
 	for (int i = 1; i <= n; i++) dis2[i] = lower_bound(arr2 + 1, arr2 + len2 + 1, dis2[i]) - arr2;
-	for (int i = 1; i <= n; i++) insert(1, 1, n, dis1[i], dis2[i]);
+	for (int i = 1; i <= n; i++) insert(dis1[i], dis2[i]);
 	while (m--)
 	{
 		int r1 = read(), r2 = read(), ans = 0;
-		r1 = lower_bound(arr1 + 1, arr1 + len1 + 1, r1) - arr1;
-		r2 = lower_bound(arr2 + 1, arr2 + len2 + 1, r2) - arr2;
-		if (r1 < n && r2 < n) ans = query(1, 1, n, r1 + 1, r2 + 1, n, n);
+		if (r1 >= arr1[len1] || r2 >= arr2[len2]) { printf("%d\n", n); continue; }
+		r1 = upper_bound(arr1 + 1, arr1 + len1 + 1, r1) - arr1;
+		r2 = upper_bound(arr2 + 1, arr2 + len2 + 1, r2) - arr2;
+		ans = query(len1, r2, len2) - query(r1 - 1, r2, len2);
 		printf("%d\n", n - ans);
 	}
 	return 0;
