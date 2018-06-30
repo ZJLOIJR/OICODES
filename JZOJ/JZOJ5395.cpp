@@ -3,38 +3,37 @@
 #include <cstdlib>
 
 typedef long long ll;
-const int K = 1e6 + 7;
+const int K = 1e6 + 10;
 const ll P = 998244353LL;
 
 ll l, r, k, f[K], fac[K];
 
-ll pow(ll a, ll b, ll mo)
+ll pow(ll a, ll b)
 {
-	a %= mo;
+	a %= P;
 	ll ret = 1;
 	while (b)
 	{
-		if (b & 1) ret = ret * a % mo;
-		a = a * a % mo, b >>= 1;
+		if (b & 1) ret = ret * a % P;
+		a = a * a % P, b >>= 1;
 	}
 	return ret;
 }
 
+ll pre[K], suf[K];
 ll solve(ll n)
 {
-	if (n <= k + 2) return f[n];
-	n %= P;
-	ll ret = 0, up = 1;
-	for (int i = 1; i <= k + 2; i++) up = up * (n - i) % P;
+	if (n == 0) return 0;
+	if (n <= k + 2) return ((f[n] + pow(2, k)) % P - 1 + P) % P;
+	ll ret = 0, cur = 1, up, down;
+	for (int i = 1; i <= k + 2; i++) cur = cur * (n - i) % P;
 	for (int i = 1; i <= k + 2; i++)
 	{
-		ret = (ret + ((k + 2 - i) & 1 ? -1 : 1) *
-				pow(fac[i - 1] * fac[k + 2 - i] % P, P - 2, P) % P *
-				pow(n - i, P - 2, P) % P *
-				f[i] % P *
-				up % P) % P;
+		int flag = ((k + 2 - i) & 1) ? -1 : 1;
+		up = cur * pow(n - i, P - 2) % P, down = (flag * fac[i - 1] + P) % P * fac[k + 2 - i] % P;
+		ret = (ret + f[i] * up % P * pow(down, P - 2) % P) % P;
 	}
-	return (ret + P) % P;
+	return ((ret + pow(2, k)) % P - 1 + P) % P;
 }
 
 int main()
@@ -43,8 +42,8 @@ int main()
 	freopen("count.out", "w", stdout);
 
 	scanf("%lld%lld%lld", &l, &r, &k);
-	f[1] = 2;
-	for (int i = 2; i <= k + 2; i++) f[i] = (f[i - 1] + pow(i, k, P)) % P;
+	f[1] = 1;
+	for (int i = 2; i <= k + 2; i++) f[i] = (f[i - 1] + pow(i, k)) % P;
 	fac[0] = 1;
 	for (int i = 1; i <= k + 2; i++) fac[i] = fac[i - 1] * i % P;
 	printf("%lld\n", (solve(r) - solve(l - 1) + P) % P);
