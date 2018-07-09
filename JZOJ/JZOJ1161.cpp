@@ -32,10 +32,10 @@ int main()
 	f[0] = 1;
 	ll tmp = (p[1] == 2) ? 2 : 1;
 	for (int i = tmp; i <= n; i++)
-		for (int j = i - tmp + 1; j >= 1; j--)
+		for (int j = i; j >= 1; j--)
 			f[j] = (f[j] + f[j - 1] * (p[i] - 1) % P) % P;
 	ans1 = ans2 = 0;
-	for (int i = 1; i <= n - tmp + 1; i++)
+	for (int i = 1; i <= n; i++)
 		if (i & 1) ans2 = (ans2 + f[i]) % P;
 		else ans1 = (ans1 + f[i]) % P;
 	printf("%lld\n%lld\n%lld\n", ans1, ans2, (ret - ans1 + P - ans2 + P - 1 + P) % P);
