@@ -60,13 +60,13 @@ void topo()
 }
 void solve()
 {
-	if (k > siz[arr[arr[0]]]) k = siz[arr[arr[0]]];
+	if (k > siz[arr[arr[0]]] + 1) k = siz[arr[arr[0]]] + 1;
 	int x = root;
-	while (k > 0)
+	while (k)
 		for (int i = 0; i < 52; i++)
 			if (son[x][i])
 			{
-				if (k > siz[son[x][i]]) k -= siz[son[x][i]];
+				if (k > siz[son[x][i]] + 1) k -= siz[son[x][i]] + 1;
 				else { putchar(chr(i)), x = son[x][i], k--; break; }
 			}
 }
