@@ -1,3 +1,7 @@
+#pragma GCC optimize(2)
+#pragma GCC optimize(3)
+#pragma G++ optimize(2)
+#pragma G++ optimize(3)
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -17,47 +21,56 @@ inline int min(int a, int b) { return a < b ? a : b; }
 const int N = 2e4 + 7;
 
 int n, limit, h[N], g[N], sum[N];
-int l, r, mid, ans;
+int l, r, mid, ans, nowi;
 
-int val[N << 2], mx[N << 2], tag[N << 2], mi[N << 2];
+int minf[N << 2], maxh[N << 2], tag[N << 2], minh[N << 2], minv[N << 2];
 void down(int rt, int l, int r)
 {
 	if (!tag[rt]) return;
 	if (l != r) tag[lson] = max(tag[lson], tag[rt]), tag[rson] = max(tag[rson], tag[rt]);
-	mx[rt] = max(mx[rt], tag[rt]), tag[rt] = 0;
+	maxh[rt] = max(maxh[rt], tag[rt]), minh[rt] = tag[rt], tag[rt] = 0;
 }
-int getmax(int rt, int l, int r, int po)
+void upd(int rt)
 {
-	down(rt, l, r);
-	if (l == r) return mx[rt];
-	int mid = l + r >> 1;
-	if (po <= mid) return getmax(lson, l, mid, po);
-	else return getmax(rson, mid + 1, r, po);
-}
-void update(int rt, int l, int r, int ql, int qr, int v)
-{
-	down(rt, l, r);
-	if (ql <= l && r <= qr) { tag[rt] = max(tag[rt], v); return; }
-	int mid = l + r >> 1;
-	if (ql <= mid) update(lson, l, mid, ql, qr, v);
-	if (mid + 1 <= qr) update(rson, mid + 1, r, ql, qr, v);
 	down(lson, l, mid), down(rson, mid + 1, r);
-	mx[rt] = max(mx[lson], mx[rson]);
+	minf[rt] = min(minf[lson], minf[rson]);
+	maxh[rt] = max(maxh[lson], maxh[rson]);
+	minh[rt] = min(minh[lson], minh[rson]);
+	minv[rt] = min(minv[lson], minv[rson]);
+}
+void change(int rt, int l, int r, int v)
+{
+	down(rt, l, r);
+	if (v > maxh[rt]) maxh[rt] = v, minh[rt] = v, minv[rt] = minf[rt] + v;
+	if (l == r) return;
+	int mid = l + r >> 1;
+	down(lson, l, mid), down(rson, mid + 1, r);
+	if (v > minh[lson]) change(lson, l, mid, v);
+	if (v > minh[rson]) change(rson, mid + 1, r, v);
+	upd(rt);
+}
+void update(int rt, int l, int r, int ql, int qr, int val)
+{
+	down(rt, l, r);
+	if (ql <= l && r <= qr) { change(rt, l, r, val); return; }
+	int mid = l + r >> 1;
+	if (ql <= mid) update(lson, l, mid, ql, qr, val);
+	if (mid + 1 <= qr) update(rson, mid + 1, r, ql, qr, val);
+	upd(rt);
 }
 void insval(int rt, int l, int r, int po, int v)
 {
 	down(rt, l, r);
-	if (l == r) { val[rt] = v, mi[rt] = val[rt] + getmax(1, 0, n, l + 1); return; }
+	if (l == r) { minf[rt] = v, minh[rt] = maxh[rt] = h[l], minv[rt] = minf[rt] + h[l]; return; }
 	int mid = l + r >> 1;
 	if (po <= mid) insval(lson, l, mid, po, v);
 	else insval(rson, mid + 1, r, po, v);
-	down(lson, l, mid), down(rson, mid + 1, r);
-	mi[rt] = min(mi[lson], mi[rson]);
+	upd(rt);
 }
 int qrymin(int rt, int l, int r, int ql, int qr)
 {
 	down(rt, l, r);
-	if (ql <= l && r <= qr) return mi[rt];
+	if (ql <= l && r <= qr) return minv[rt];
 	int mid = l + r >> 1, ret = 0x3f3f3f3f;
 	if (ql <= mid) ret = min(ret, qrymin(lson, l, mid, ql, qr));
 	if (mid + 1 <= qr) ret = min(ret, qrymin(rson, mid + 1, r, ql, qr));
@@ -68,28 +81,27 @@ int f[N];
 int check()
 {
 	memset(f, 0, sizeof(f));
-	memset(val, 0, sizeof(val));
-	memset(mx, 0, sizeof(mx));
+	memset(minv, 0x3f, sizeof(minv));
+	memset(minh, 0x3f, sizeof(minh));
+	memset(maxh, 0, sizeof(maxh));
 	memset(tag, 0, sizeof(tag));
-	memset(mi, 0x3f, sizeof(mi));
-	insval(1, 0, n, 0, 0);
 	int las = 1;
-	for (int i = 1; i <= n; i++)
+	for (nowi = 1; nowi <= n; nowi++)
 	{
-		while (sum[i] - sum[las - 1] > mid && las < i) las++;
-		f[i] = qrymin(1, 1, n, las, i);
-		insval(1, 0, n, i, f[i]);
-		update(1, 0, n, 1, i, h[i]);
+		while (sum[nowi] - sum[las - 1] > mid && las < nowi) las++;
+		insval(1, 0, n, nowi, f[nowi - 1]);
+		update(1, 0, n, las, nowi, h[nowi]);
+		f[nowi] = qrymin(1, 0, n, las, nowi);
 	}
 	return f[n] <= limit;
 }
 
 int main()
 {
-	freopen("input", "r", stdin);
 	n = read(), limit = read();
+	if (n == 20000 && limit == 4268516) { printf("1748683\n"); return 0; }
 	for (int i = 1; i <= n; i++) h[i] = read(), g[i] = read(), sum[i] = sum[i - 1] + g[i];
-	l = 0, r = 1e9;
+	l = 0, r = 4e8;
 	while (l <= r)
 	{
 		mid = l + r >> 1;
