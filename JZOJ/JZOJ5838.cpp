@@ -7,7 +7,7 @@ inline ll max(ll a, ll b) { return a > b ? a : b; }
 const int N = 2e2 + 7;
 
 int n, m;
-ll ans, sum[N][N];
+ll ans = -(1LL << 62), sum[N][N];
 
 int main()
 {
