@@ -17,8 +17,8 @@ int cmp(note p, note q) { return p.x < q.x; }
 int cnt[N << 3]; double sum[N << 3];
 void upd(int rt, int l, int r)
 {
-	if (cnt[rt]) { sum[rt] = arry[r + 1] - arry[l]; return; }
-	if (l == r) sum[rt] = 0;
+	if (cnt[rt]) sum[rt] = arry[r + 1] - arry[l];
+	else if (l == r) sum[rt] = 0;
 	else sum[rt] = sum[lson] + sum[rson];
 }
 void change(int rt, int l, int r, int ql, int qr, int val)
@@ -36,7 +36,7 @@ int main()
 	{
 		scanf("%d", &n);
 		if (!n) break;
-		ans = 0;
+		ans = 0, maxy = len = 0;
 		memset(sum, 0, sizeof(sum));
 		memset(cnt, 0, sizeof(cnt));
 		for (int i = 1; i <= n; i++)
@@ -50,15 +50,15 @@ int main()
 			int Y1 = lower_bound(arry + 1, arry + maxy + 1, y1[i]) - arry,
 				Y2 = lower_bound(arry + 1, arry + maxy + 1, y2[i]) - arry;
 			a[++len] = (note){x1[i], Y1, Y2, 1};
-			a[++len] = (note){x2[i] + 1, Y1, Y2, -1};
+			a[++len] = (note){x2[i], Y1, Y2, -1};
 		}
 		sort(a + 1, a + len + 1, cmp);
 		for (int i = 1; i <= len; i++)
 		{
-			change(1, 1, maxy, a[i].y1, a[i].y2, a[i].val);
-			if (i != 1) ans += (a[i].x - a[i - 1].x) * sum[1];
+			ans += (a[i].x - a[i - 1].x) * sum[1];
+			change(1, 1, maxy, a[i].y1, a[i].y2 - 1, a[i].val);
 		}
-		printf("Test case #1\nTotal explored area: %.2lf\n", ans);
+		printf("Test case #%d\nTotal explored area: %.2lf\n\n", ++Case, ans);
 	}
 	return 0;
 }
