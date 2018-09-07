@@ -17,7 +17,7 @@ const int N = 8e4 + 7;
 
 struct Pair { int y, id; } tmp; set<Pair> s;
 int operator<(Pair p, Pair q) { return p.y < q.y; }
-set<int> col[N];
+set<int> tmp, col[N];
 
 int ans[N];
 int n, m, len, x1[N], y1[N], x2[N], y2[N];
@@ -32,7 +32,7 @@ void dfs(int u)
 	for (int i = st[u]; i; i = nx[i])
 	{
 		dfs(to[i]);
-		for (set<int>::iterator fir = col[to[i]].begin(); fir != col[to[i]].end(); fir++) col[u].insert(*fir);
+		col[u].insert(col[to[i]].begin(), col[to[i]].end());
 		col[to[i]].clear();
 	}
 	ans[u] = col[u].size();
@@ -101,7 +101,7 @@ int main()
 		}
 	}
 	for (int i = 1; i <= n; i++) add(anc[i][0], i);
-	//dfs(0);
+	dfs(0);
 	for (int i = 1; i <= n; i++) printf("%d\n", ans[i]);
 
 	fclose(stdin);
