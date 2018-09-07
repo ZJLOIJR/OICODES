@@ -17,34 +17,56 @@ const int N = 8e4 + 7;
 
 struct Pair { int y, id; } tmp; set<Pair> s;
 int operator<(Pair p, Pair q) { return p.y < q.y; }
-set<int> col[N];
 
-int ans[N];
 int n, m, len, x1[N], y1[N], x2[N], y2[N];
 
 struct note { int x, y, id, val; } arr[N * 3];
-int cmp(note p, note q) { return p.x < q.x; }
+int cmp(note p, note q) { return p.x == q.x ? p.id > q.id : p.x < q.x; }
 
-int tot, st[N], to[N << 1], nx[N << 1], anc[N][21];
-void add(int u, int v) { to[++tot] = v, nx[tot] = st[u], st[u] = tot; }
-
-int in(int x1, int y1, int x2, int y2, int xx1, int yy1, int xx2, int yy2)
+int cnt;
+int root[N], lson[N * 20], rson[N * 20], sum[N * 20], col[N * 20];
+void insert(int &rt, int l, int r, int po)
 {
-	return x1 <= xx1 && xx2 <= x2 && y1 <= yy1 && yy2 <= y2;
+	if (!rt) rt = ++cnt;
+	if (l == r) { sum[rt] = col[rt] = 1; return; }
+	int mid = l + r >> 1;
+	if (po <= mid) insert(lson[rt], l, mid, po);
+	else insert(rson[rt], mid + 1, r, po);
+	col[rt] = col[lson] + col[rson];
 }
+void merge(int x, int y)
+{
+	if (!x || !y) return;
+	if (lson[x] && lson[y]) merge(lson[x], lson[y]);
+	else if (!lson[y])
+}
+
+int tot, st[N], to[N], nx[N], anc[N][21];
+void add(int u, int v) { to[++tot] = v, nx[tot] = st[u], st[u] = tot; }
+void dfs(int u)
+{
+	for (int i = st[u]; i; i = nx[i])
+	{
+		dfs(to[i]);
+		merge(root[to[i]], root[u]);
+	}
+	ans[u] = col[root[u]];
+}
+
+int in(int x1, int y1, int x2, int y2, int xx1, int yy1, int xx2, int yy2) { return x1 <= xx1 && xx2 <= x2 && y1 <= yy1 && yy2 <= y2; }
 
 int main()
 {
-	freopen("input", "r", stdin);
 	//freopen("plahte.in", "r", stdin);
 	//freopen("plahte.out", "w", stdout);
 	
+	x1[0] = 0, y1[0] = 0, x2[0] = 1e9 + 7, y2[0] = 1e9 + 7;
 	n = read(), m = read();
 	for (int i = 1; i <= n; i++)
 	{
 		x1[i] = read(), y1[i] = read(), x2[i] = read(), y2[i] = read();
 		arr[++len] = (note){x1[i], y2[i], i, 1};
-		arr[++len] = (note){x2[i], y2[i], i, -1};
+		arr[++len] = (note){x2[i] + 1, y2[i], i, -1};
 	}
 	for (int i = 1, x, y, k; i <= m; i++)
 	{
@@ -71,9 +93,9 @@ int main()
 					anc[ths][0] = fa;
 				}
 				for (int j = 1; j <= 20; j++) anc[ths][j] = anc[anc[ths][j - 1]][j - 1];
-				s.insert((Pair){a[i].y, a[i].id});
+				s.insert((Pair){arr[i].y, arr[i].id});
 			}
-			else s.erase((Pair){a[i].y, a[i].id});
+			else s.erase((Pair){arr[i].y, arr[i].id});
 		}
 		else
 		{
@@ -86,11 +108,13 @@ int main()
 					if (!in(x1[anc[fa][j]], y1[anc[fa][j]], x2[anc[fa][j]], y2[anc[fa][j]], arr[i].x, arr[i].y, arr[i].x, arr[i].y))
 						fa = anc[fa][j];
 				fa = anc[fa][0];
-				col[fa].insert(arr[i].val);
+				insert(root[fa], 1, 1e9, arr[i].val);
 			}
 		}
 	}
-	for (int i = 1; i <= n; i++) printf("%d\n", ans[i]);
+	for (int i = 1; i <= n; i++) add(anc[i][0], i);
+	//dfs(0);
+	for (int i = 1; i <= n; i++) printf("%d\n", col[root[i]]);
 
 	fclose(stdin);
 	fclose(stdout);
