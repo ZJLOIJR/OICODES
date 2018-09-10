@@ -9,16 +9,17 @@ int n, m;
 int f[N][N];
 
 int S, T;
-int tot = 1, st[N], nx[M], to[M], len[M];
+int tot = 1, st[N * 2], nx[M * 4], to[M * 4], len[M * 4];
 void add(int u, int v)
 {
 	to[++tot] = v, nx[tot] = st[u], len[tot] = 1, st[u] = tot;
 	to[++tot] = u, nx[tot] = st[v], len[tot] = 0, st[v] = tot;
 }
 
-int head, tail, que[N * 20], dep[N];
+int head, tail, que[N * 2], dep[N * 2];
 int bfs()
 {
+	memset(dep, 0, sizeof(dep));
 	head = 1, que[tail = 1] = S, dep[S] = 1;
 	while (head <= tail)
 	{
@@ -32,6 +33,7 @@ int bfs()
 
 int dinic(int u, int flow)
 {
+	if (u == T) return flow;
 	int rest = flow, tmp;
 	for (int i = st[u]; i; i = nx[i])
 		if (len[i] > 0 && dep[u] + 1 == dep[to[i]])
@@ -45,8 +47,8 @@ int dinic(int u, int flow)
 
 int main()
 {
-	//freopen("dance.in", "r", stdin);
-	//freopen("dance.out", "w", stdout);
+	freopen("dance.in", "r", stdin);
+	freopen("dance.out", "w", stdout);
 
 	scanf("%d%d", &n, &m);
 	for (int i = 1, x, y; i <= m; i++) scanf("%d%d", &x, &y), f[x][y] = 1;
@@ -56,7 +58,7 @@ int main()
 			for (int j = 1; j <= n; j++)
 				f[i][j] |= (f[i][k] & f[k][j]);
 	S = 0, T = 2 * n + 1;
-	for (int i = 1; i <= n; i++) add(S, i), add(i + n, T), add(i, i + n);
+	for (int i = 1; i <= n; i++) add(S, i), add(i + n, T);
 	for (int i = 1; i <= n; i++)
 		for (int j = 1; j <= n; j++)
 			if (i != j && f[i][j])
