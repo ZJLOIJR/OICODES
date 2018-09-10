@@ -17,7 +17,8 @@ const int N = 8e4 + 7;
 
 struct Pair { int y, id; } tmp; set<Pair> s;
 int operator<(Pair p, Pair q) { return p.y < q.y; }
-set<int> tmp, col[N];
+set<int> temp, col[N];
+int ind[N];
 
 int ans[N];
 int n, m, len, x1[N], y1[N], x2[N], y2[N];
@@ -29,13 +30,19 @@ int tot, st[N], to[N], nx[N], anc[N][21];
 void add(int u, int v) { to[++tot] = v, nx[tot] = st[u], st[u] = tot; }
 void dfs(int u)
 {
+	ind[u] = u;
 	for (int i = st[u]; i; i = nx[i])
 	{
 		dfs(to[i]);
-		col[u].insert(col[to[i]].begin(), col[to[i]].end());
-		col[to[i]].clear();
+		int &x = ind[u], &y = ind[to[i]];
+		if (col[x].size() < col[y].size()) swap(x, y);
+		while (!col[y].empty())
+		{
+			col[x].insert(*col[y].begin());
+			col[y].erase(col[y].begin());
+		}
 	}
-	ans[u] = col[u].size();
+	ans[u] = col[ind[u]].size();
 }
 
 int in(int x1, int y1, int x2, int y2, int xx1, int yy1, int xx2, int yy2)
@@ -45,8 +52,8 @@ int in(int x1, int y1, int x2, int y2, int xx1, int yy1, int xx2, int yy2)
 
 int main()
 {
-	//freopen("plahte.in", "r", stdin);
-	//freopen("plahte.out", "w", stdout);
+	freopen("plahte.in", "r", stdin);
+	freopen("plahte.out", "w", stdout);
 	
 	x1[0] = 0, y1[0] = 0, x2[0] = 1e9 + 7, y2[0] = 1e9 + 7;
 	n = read(), m = read();
