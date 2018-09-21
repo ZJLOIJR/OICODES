@@ -21,9 +21,10 @@ int main()
 	for (int i = 1; i <= n; i++)
 	{
 		scanf("%d", s + i);
-		if (s[i] > i)
+		if (s[i] < i)
 		{
-			add(i + 1, n, n - s[i], -1);
+			add(i, n - 1, i - s[i], 1);
+			add(i - s[i], i - 1, 0, 1);
 			add();
 		}
 	}
