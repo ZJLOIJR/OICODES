@@ -54,8 +54,9 @@ int main()
 		typ[i] = read(), qu[i] = read(), qv[i] = read();
 		if (typ[i] == 1)
 		{
-			qu[i] = getfa(qu[i]), qv[i] = getfa(qv[i]);
-			fa[qv[i]] = qu[i], add(qu[i], qv[i]), add(qv[i], qu[i]);
+			if (getfa(qv[i]) == getfa(qu[i])) continue;
+			fa[getfa(qv[i])] = getfa(qu[i]);
+			add(qu[i], qv[i]), add(qv[i], qu[i]);
 		}
 	}
 	for (int i = 1; i <= n; i++) if (!dep[i]) dep[i] = 1, dfs(i);
