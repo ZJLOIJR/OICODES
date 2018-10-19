@@ -14,7 +14,7 @@ inline int read()
 	return f ? -x : x;
 }
 
-int n, m, q;
+int n, m, q, u1[N], v1[N];
 int qu[N], qv[N], typ[N];
 
 int fa[N];
@@ -41,20 +41,20 @@ int getlca(int u, int v)
 
 int main()
 {
-	//freopen("arrival.in", "r", stdin);
-	//freopen("arrival.out", "w", stdout);
+	freopen("arrival.in", "r", stdin);
+	freopen("arrival.out", "w", stdout);
 
 	n = read(), m = read();
 	for (int i = 1; i <= n; i++) fa[i] = i;
 	for (int i = 1, r; i <= m; i++) r = read();
-	for (int i = 1, u, v; i <= n - m; i++) u = read(), v = read(), fa[getfa(u)] = getfa(v), add(u, v), add(v, u);
+	for (int i = 1; i <= n - m; i++) u1[i] = read(), v1[i] = read(), fa[getfa(v1[i])] = getfa(u1[i]), add(u1[i], v1[i]), add(v1[i], u1[i]);
 	q = read();
 	for (int i = 1; i <= q; i++)
 	{
 		typ[i] = read(), qu[i] = read(), qv[i] = read();
 		if (typ[i] == 1)
 		{
-			if (getfa(qv[i]) == getfa(qu[i])) continue;
+			if (getfa(qu[i]) == getfa(qv[i])) continue;
 			fa[getfa(qv[i])] = getfa(qu[i]);
 			add(qu[i], qv[i]), add(qv[i], qu[i]);
 		}
@@ -64,24 +64,30 @@ int main()
 		for (int i = 1; i <= n; i++)
 			anc[i][j] = anc[anc[i][j - 1]][j - 1];
 	for (int i = 1; i <= n; i++) fa[i] = i;
+	for (int i = 1; i <= n - m; i++) fa[getfa(v1[i])] = getfa(u1[i]);
 	for (int i = 1; i <= q; i++)
 	{
-		if (typ[i] == 1) fa[getfa(qv[i])] = getfa(qu[i]);
+		if (typ[i] == 1)
+		{
+			if (getfa(qu[i]) == getfa(qv[i])) continue;
+			fa[getfa(qv[i])] = getfa(qu[i]);
+		}
 		else
 		{
 			if (getfa(qu[i]) != getfa(qv[i])) printf("orzorz\n");
 			else
 			{
-				int root = getfa(qu[i]), mxdep = 0, x, ans;
+				int root = fa[qu[i]], mxdep = 0, x, ans;
 				ans = getlca(qu[i], qv[i]), mxdep = dep[ans];
 				x = getlca(qu[i], root);
 				if (dep[x] > mxdep) mxdep = dep[x], ans = x;
 				x = getlca(qv[i], root);
 				if (dep[x] > mxdep) mxdep = dep[x], ans = x;
-				printf("%d\n", x);
+				printf("%d\n", ans);
 			}
 		}
 	}
+
 	fclose(stdin);
 	fclose(stdout);
 	return 0;
