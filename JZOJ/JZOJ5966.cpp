@@ -79,7 +79,7 @@ void insert(int rt, int l, int r, int po, int val)
 		{
 			sum[rt].v[0][0] = INF;
 			sum[rt].v[0][1] = g[arr[l]][0];
-			sum[rt].v[1][0] = sum[rt].v[1][1] = g[arr[l]][1] + p[arr[l]];
+			sum[rt].v[1][0] = sum[rt].v[1][1] = g[arr[l]][1];
 		}
 		else if (val == 1) sum[rt].v[1][0] = sum[rt].v[1][1] = INF;
 		else sum[rt].v[0][1] = INF;
@@ -108,6 +108,7 @@ void init()
 	n = read(), m = read(), scanf("%*s");
 	for (int i = 1; i <= n; i++) p[i] = read();
 	for (int i = 1, u, v; i < n; i++) u = read(), v = read(), add(u, v), add(v, u);
+	memset(g, 0x3f, sizeof(g));
 	dep[1] = 1, dfs1(1), dfs2(1, 1), dp(1);
 	for (int i = 1; i <= n; i++) insert(1, 1, n, i, 2);
 	for (int i = 1; i <= n; i++) if (top[i] == 1 && dep[i] > dep[d]) d = i;
@@ -121,9 +122,9 @@ void solve()
 		while (ta) insert(1, 1, n, tid[ta], x), ta = fa[top[ta]];
 		while (tb) insert(1, 1, n, tid[tb], y), tb = fa[top[tb]];
 		matrix res = query(1, 1, n, tid[1], tid[d] - 1);
-		printf("%lld %lld\n%lld %lld\n", res.v[0][0], res.v[0][1], res.v[1][0], res.v[1][1]);
+		//printf("%lld %lld\n%lld %lld\n", res.v[0][0], res.v[0][1], res.v[1][0], res.v[1][1]);
 		ll f0 = min(res.v[0][0] + g[d][0], res.v[0][1] + g[d][1]), f1 = min(res.v[1][0] + g[d][0], res.v[1][1] + g[d][1]);
-		//printf("%lld\n", min(f0, f1));
+		printf("%lld\n", min(f0, f1));
 		//printf("%lld %lld\n", f0, f1);
 		ta = fa[top[a]], tb = fa[top[b]];
 		while (ta) insert(1, 1, n, tid[ta], 2), ta = fa[top[ta]];
@@ -137,6 +138,11 @@ int main()
 	//freopen("defense.in", "r", stdin);
 	//freopen("defense.out", "w", stdout);
 	init();
+	matrix res = query(1, 1, n, tid[5], tid[5]);
+	res = res * query(1, 1, n, tid[3], tid[3]);
+	printf("%lld %lld\n%lld %lld\n", res.v[0][0], res.v[0][1], res.v[1][0], res.v[1][1]);
+	ll f0 = min(res.v[0][0] + g[4][0], res.v[0][1] + g[4][1]), f1 = min(res.v[1][0] + g[4][0], res.v[1][1] + g[4][1]);
+	printf("%lld %lld\n", f0, f1);
 	solve();
 	fclose(stdin);
 	fclose(stdout);
