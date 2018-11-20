@@ -117,13 +117,17 @@ void solve()
 {
 	while (m--)
 	{
-		int a = read(), x = read(), b = read(), y = read();
-		int ta = fa[top[a]], tb = fa[top[b]];
+		int a = read(), x = read(), b = read(), y = read(), ta = fa[top[a]], tb = fa[top[b]];
 		while (ta) insert(1, 1, n, tid[ta], x), ta = fa[top[ta]];
-		while (tb) insert(1, 1, n, tid[tb], x), tb = fa[top[tb]];
+		while (tb) insert(1, 1, n, tid[tb], y), tb = fa[top[tb]];
 		matrix res = query(1, 1, n, tid[1], tid[d] - 1);
+		printf("%lld %lld\n%lld %lld\n", res.v[0][0], res.v[0][1], res.v[1][0], res.v[1][1]);
 		ll f0 = min(res.v[0][0] + g[d][0], res.v[0][1] + g[d][1]), f1 = min(res.v[1][0] + g[d][0], res.v[1][1] + g[d][1]);
-		printf("%lld\n", min(f0, f1));
+		//printf("%lld\n", min(f0, f1));
+		//printf("%lld %lld\n", f0, f1);
+		ta = fa[top[a]], tb = fa[top[b]];
+		while (ta) insert(1, 1, n, tid[ta], 2), ta = fa[top[ta]];
+		while (tb) insert(1, 1, n, tid[tb], 2), tb = fa[top[tb]];
 	}
 }
 
