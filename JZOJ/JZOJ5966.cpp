@@ -1,3 +1,4 @@
+
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -121,14 +122,26 @@ void solve()
 		int a = read(), x = read(), b = read(), y = read(), ta = fa[top[a]], tb = fa[top[b]];
 		while (ta) insert(1, 1, n, tid[ta], x), ta = fa[top[ta]];
 		while (tb) insert(1, 1, n, tid[tb], y), tb = fa[top[tb]];
+		insert(1, 1, n, tid[a], x);
+		insert(1, 1, n, tid[b], y);
 		matrix res = query(1, 1, n, tid[1], tid[d] - 1);
 		//printf("%lld %lld\n%lld %lld\n", res.v[0][0], res.v[0][1], res.v[1][0], res.v[1][1]);
-		ll f0 = min(res.v[0][0] + g[d][0], res.v[0][1] + g[d][1]), f1 = min(res.v[1][0] + g[d][0], res.v[1][1] + g[d][1]);
-		printf("%lld\n", min(f0, f1));
-		//printf("%lld %lld\n", f0, f1);
+		ll g0 = g[d][0], g1 = g[d][1];
+		if (d == a)
+		{
+			if (x) g0 = INF; else g1 = INF;
+		}
+		else if (d == b)
+		{
+			if (y) g0 = INF; else g1 = INF;
+		}
+		ll f0 = min(res.v[0][0] + g0, res.v[0][1] + g1), f1 = min(res.v[1][0] + g0, res.v[1][1] + g1);
+		//printf("%lld\n", min(f0, f1));
 		ta = fa[top[a]], tb = fa[top[b]];
 		while (ta) insert(1, 1, n, tid[ta], 2), ta = fa[top[ta]];
 		while (tb) insert(1, 1, n, tid[tb], 2), tb = fa[top[tb]];
+		insert(1, 1, n, tid[a], 2);
+		insert(1, 1, n, tid[b], 2);
 	}
 }
 
@@ -138,11 +151,12 @@ int main()
 	//freopen("defense.in", "r", stdin);
 	//freopen("defense.out", "w", stdout);
 	init();
-	matrix res = query(1, 1, n, tid[5], tid[5]);
-	res = res * query(1, 1, n, tid[3], tid[3]);
-	printf("%lld %lld\n%lld %lld\n", res.v[0][0], res.v[0][1], res.v[1][0], res.v[1][1]);
-	ll f0 = min(res.v[0][0] + g[4][0], res.v[0][1] + g[4][1]), f1 = min(res.v[1][0] + g[4][0], res.v[1][1] + g[4][1]);
-	printf("%lld %lld\n", f0, f1);
+	//matrix res = query(1, 1, n, tid[1], tid[1]);
+	//res = res * query(1, 1, n, tid[5], tid[5]);
+	//res = res * query(1, 1, n, tid[3], tid[3]);
+	//printf("%lld %lld\n%lld %lld\n", res.v[0][0], res.v[0][1], res.v[1][0], res.v[1][1]);
+	//ll f0 = min(res.v[0][0] + g[4][0], res.v[0][1] + g[4][1]), f1 = min(res.v[1][0] + g[4][0], res.v[1][1] + g[4][1]);
+	//printf("%lld %lld\n", f0, f1);
 	solve();
 	fclose(stdin);
 	fclose(stdout);
