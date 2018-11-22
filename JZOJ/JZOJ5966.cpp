@@ -6,7 +6,7 @@ using namespace std;
 
 typedef long long ll;
 const int N = 100007;
-const ll INF = (1ll << 50);
+const ll INF = (1ll << 40);
 inline int read()
 {
 	int x = 0, f = 0;
@@ -18,7 +18,7 @@ inline int read()
 ll min(ll a, ll b) { return a < b ? a : b; }
 
 int n, m;
-int dfn, dep[N], son[N], size[N], top[N], fa[N], tid[N], arr[N], bot[N];
+int dfn, son[N], size[N], top[N], fa[N], tid[N], arr[N], bot[N];
 int tot, st[N], to[N << 1], nx[N << 1];
 void add(int u, int v) { to[++tot] = v, nx[tot] = st[u], st[u] = tot; }
 ll p[N], f[N][2], g[N][2];
@@ -29,11 +29,14 @@ struct matrix
 	matrix operator*(matrix a)
 	{
 		matrix c;
-		memset(c.v, 0x3f, sizeof(c.v));
+		c.v[0][0] = c.v[0][1] = c.v[1][0] = c.v[1][1] = INF;
 		for (int i = 0; i < 2; i++)
 			for (int j = 0; j < 2; j++)
 				for (int k = 0; k < 2; k++)
+				{
 					c.v[i][j] = min(c.v[i][j], v[i][k] + a.v[k][j]);
+					if (c.v[i][j] > INF) c.v[i][j] = INF;
+				}
 		return c;
 	}
 } mat[N];
@@ -68,9 +71,7 @@ void dfs1(int u)
 	for (int i = st[u]; i; i = nx[i])
 		if (to[i] != fa[u])
 		{
-			dep[to[i]] = dep[u] + 1, fa[to[i]] = u;
-			dfs1(to[i]);
-			size[u] += size[to[i]];
+			fa[to[i]] = u, dfs1(to[i]), size[u] += size[to[i]];
 			if (size[to[i]] > mxsiz) mxsiz = size[to[i]], son[u] = to[i];
 		}
 }
@@ -83,15 +84,15 @@ void dfs2(int u, int tp)
 }
 void dp(int u)
 {
-	f[u][0] = g[u][0] = 0, f[u][1] = g[u][1] = p[u];
+	f[u][0] = 0, f[u][1] = p[u];
 	for (int i = st[u]; i; i = nx[i])
 		if (to[i] != fa[u])
 		{
 			dp(to[i]);
-			if (to[i] != son[u]) g[u][0] += f[to[i]][1], g[u][1] += min(f[to[i]][0], f[to[i]][1]);
 			f[u][0] += f[to[i]][1], f[u][1] += min(f[to[i]][0], f[to[i]][1]);
 		}
-	mat[u].v[0][0] = INF, mat[u].v[0][1] = g[u][0], mat[u].v[1][0] = g[u][1], mat[u].v[1][1] = g[u][1];
+	g[u][0] = f[u][0] - f[son[u]][1], g[u][1] = f[u][1] - min(f[son[u]][0], f[son[u]][1]);
+	mat[u].v[0][0] = INF, mat[u].v[0][1] = g[u][0], mat[u].v[1][0] = mat[u].v[1][1] = g[u][1];
 }
 
 
@@ -100,8 +101,7 @@ void init()
 	n = read(), m = read(), scanf("%*s");
 	for (int i = 1; i <= n; i++) p[i] = read();
 	for (int i = 1, u, v; i < n; i++) u = read(), v = read(), add(u, v), add(v, u);
-	memset(g, 0x3f, sizeof(g));
-	dep[1] = 1, dfs1(1), dfs2(1, 1), dp(1);
+	dfs1(1), dfs2(1, 1), dp(1);
 	for (int i = 1; i <= n; i++) insert(1, 1, n, i);
 }
 
@@ -116,8 +116,9 @@ void doit(int u, int v)
 		insert(1, 1, n, tid[u]);
 		matrix now = query(1, 1, n, tid[top[u]], tid[bot[u]]);
 		u = fa[top[u]];
-		mat[u].v[0][1] += now.v[1][0] - res.v[1][0];
-		mat[u].v[1][1] = mat[u].v[1][0] += min(now.v[0][1], now.v[1][1]) - min(res.v[0][1], res.v[1][1]);
+		mat[u].v[0][1] += now.v[1][1] - res.v[1][1];
+		mat[u].v[1][0] += min(now.v[0][1], now.v[1][1]) - min(res.v[0][1], res.v[1][1]);
+		mat[u].v[1][1] += min(now.v[0][1], now.v[1][1]) - min(res.v[0][1], res.v[1][1]);
 	}
 }
 
@@ -137,7 +138,7 @@ void solve()
 
 int main()
 {
-	freopen("input", "r", stdin);
+	freopen("testdata1.in", "r", stdin);
 	freopen("output", "w", stdout);
 	//freopen("defense.in", "r", stdin);
 	//freopen("defense.out", "w", stdout);
