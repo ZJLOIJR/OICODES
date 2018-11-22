@@ -34,8 +34,8 @@ struct matrix
 			for (int j = 0; j < 2; j++)
 				for (int k = 0; k < 2; k++)
 				{
-					c.v[i][j] = min(c.v[i][j], v[i][k] + a.v[k][j]);
-					if (c.v[i][j] > INF) c.v[i][j] = INF;
+					if (v[i][k] >= INF || a.v[k][j] >= INF) c.v[i][j] = min(c.v[i][j], INF);
+					else c.v[i][j] = min(c.v[i][j], v[i][k] + a.v[k][j]);
 				}
 		return c;
 	}
