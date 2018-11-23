@@ -1,3 +1,4 @@
+#pragma GCC optimize(3)
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -33,10 +34,8 @@ struct matrix
 		for (int i = 0; i < 2; i++)
 			for (int j = 0; j < 2; j++)
 				for (int k = 0; k < 2; k++)
-				{
-					if (v[i][k] >= INF || a.v[k][j] >= INF) c.v[i][j] = min(c.v[i][j], INF);
-					else c.v[i][j] = min(c.v[i][j], v[i][k] + a.v[k][j]);
-				}
+					if (v[i][k] < INF && a.v[k][j] < INF)
+						c.v[i][j] = min(c.v[i][j], v[i][k] + a.v[k][j]);
 		return c;
 	}
 } mat[N];
@@ -107,9 +106,17 @@ void init()
 
 void doit(int u, int v)
 {
-	if (v == -1) mat[u].v[0][1] = g[u][0], mat[u].v[1][0] = mat[u].v[1][1] = g[u][1];
-	else if (v) mat[u].v[0][1] = INF;
-	else mat[u].v[1][0] = mat[u].v[1][1] = INF;
+	if (v == -1)
+	{
+		while (u)
+		{
+			mat[u].v[0][0] = INF, mat[u].v[0][1] = g[u][0], mat[u].v[1][0] = mat[u].v[1][1] = g[u][1];
+			insert(1, 1, n, tid[u]);
+			u = fa[top[u]];
+		}
+	}
+	else if (v) mat[u].v[0][1] = INF - 1;
+	else mat[u].v[1][0] = mat[u].v[1][1] = INF - 1;
 	while (u)
 	{
 		matrix res = query(1, 1, n, tid[top[u]], tid[bot[u]]);
@@ -138,10 +145,8 @@ void solve()
 
 int main()
 {
-	freopen("testdata1.in", "r", stdin);
-	freopen("output", "w", stdout);
-	//freopen("defense.in", "r", stdin);
-	//freopen("defense.out", "w", stdout);
+	freopen("defense.in", "r", stdin);
+	freopen("defense.out", "w", stdout);
 	init();
 	solve();
 	fclose(stdin);
