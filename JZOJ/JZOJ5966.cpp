@@ -115,8 +115,8 @@ void doit(int u, int v)
 			u = fa[top[u]];
 		}
 	}
-	else if (v) mat[u].v[0][1] = INF - 1;
-	else mat[u].v[1][0] = mat[u].v[1][1] = INF - 1;
+	else if (v) mat[u].v[0][1] = INF;
+	else mat[u].v[1][0] = mat[u].v[1][1] = INF;
 	while (u)
 	{
 		matrix res = query(1, 1, n, tid[top[u]], tid[bot[u]]);
